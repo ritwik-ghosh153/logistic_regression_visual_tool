@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import plotly.graph_objects as goa
+import plotly.graph_objects as go
 import plotly.express as px
 import dash
 import dash_html_components as html
@@ -40,7 +40,7 @@ server = app.server
 
 data = pd.DataFrame()
 n_classes = 2
-n_clusters = 1
+# n_clusters = 1
 n_samples = 300
 
 multi_class_options = [
@@ -109,7 +109,7 @@ app.layout = html.Div(children=
                         dcc.Slider(
                             id='classes_picker',
                             min=2,
-                            max=5,
+                            max=4,
                             step=1,
                             value=2,
                         ),
@@ -117,17 +117,17 @@ app.layout = html.Div(children=
                     ),
 
                     # clusters parameter
-                    html.Div([
-                        html.P("Number of clusters in data", className="hyperparameter-title"),
-                        dcc.Slider(
-                            id='clusters_picker',
-                            min=1,
-                            max=5,
-                            step=1,
-                            value=1,
-                        ),
-                    ], className='slider'
-                    ),
+                    # html.Div([
+                    #     html.P("Number of clusters in data", className="hyperparameter-title"),
+                    #     dcc.Slider(
+                    #         id='clusters_picker',
+                    #         min=1,
+                    #         max=5,
+                    #         step=1,
+                    #         value=1,
+                    #     ),
+                    # ], className='slider'
+                    # ),
 
                     # samples parameter
                     html.Div([
@@ -152,7 +152,8 @@ app.layout = html.Div(children=
                 html.Div([
                     html.Div([
                         dcc.Graph(
-                            id='dataset_graph'
+                            id='dataset_graph',
+                            # figure='fig'
                         ),
                     ]),
 
@@ -288,35 +289,68 @@ app.layout = html.Div(children=
                 ),
             ], className='row'),
         ], id="playground"),
-    html.Div([],id='asd')
+    html.Div([], id='asd')
 ],
     className='container')
 
 
 # functions
 
-@app.callback(Output('asd', 'style'), [Input('classes_picker', 'value'), Input('clusters_picker', 'value'),Input('samples_picker', 'value')])
-def set_data(classes, clusters, samples):
-    global n_clusters
+@app.callback(Output('asd', 'style'),
+              [Input('classes_picker', 'value'), Input('samples_picker', 'value')])
+def set_data(classes, samples):
+    # global n_clusters
     global n_classes
     global n_samples
     n_classes = classes
-    n_clusters = clusters
+    # n_clusters = clusters
     n_samples = samples
     return {}
 
 
-@app.callback(Output('dataset_graph', 'figure'),[Input('data-generator','n_clicks')])
+@app.callback(Output('dataset_graph', 'figure'), [Input('data-generator', 'n_clicks')])
 def generate_data(clicks):
-    global n_clusters
+    # global n_clusters
     global n_classes
     global n_samples
     global data
     x = d.make_classification(n_samples=n_samples, n_features=2, n_informative=2, n_repeated=0, n_redundant=0,
-                              n_classes=n_classes,n_clusters_per_class=n_clusters)
+                              n_classes=n_classes, n_clusters_per_class=1)
     data = pd.DataFrame(x[0]).join(pd.DataFrame(x[1], columns=['Labels']))
     print(data)
-    return
+
+    traces = []
+    for i in range(0, n_classes):
+        x = data[data['Labels'] == i]
+        traces.append(go.Scatter(x=x[0], y=x[1], mode='markers'))
+
+    return go.Figure(data=traces)
+    # fig=px.scatter(data, x=data[0], y=data[1])
+    # return fig
+    # fig.update_layout()
+    # return go.Figure(data=[go.Scatter(x=data[0], y=data[1], mode='markers',)],
+    #                  layout=go.Layout(
+    #                      title='Cumulative Number of Confirmed, Deceased and Recovered Cases',
+    #                      xaxis={'title': 'Date'},
+    #                      yaxis={'title': 'Number of People affected'}
+    #
+    #                  ))
+    # return {
+    #     'data': go.Scatter(
+    #                        x=data[0],
+    #                        y=data[1],
+    #                        ),
+    #     'layout': go.Layout({
+    #         'xaxis': dict(
+    #             title='Date'
+    #         ),
+    #         'yaxis': dict(
+    #             title='Number of people affected',
+    #
+    #         ),
+    #         'title': 'Cumulative Cases Confirmed, Deceased and Recovered',
+    #     })
+    # }
 
 
 if __name__ == "__main__":
