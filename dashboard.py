@@ -9,6 +9,8 @@ from dash.dependencies import Input, Output
 import dash_table
 import plotly.io as pio
 import sklearn.datasets as d
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 
 # external CSS stylesheets
 external_stylesheets = [
@@ -42,6 +44,10 @@ data = pd.DataFrame()
 n_classes = 2
 # n_clusters = 1
 n_samples = 300
+
+isDataSet = False
+isDataGenerated = False
+canTrain = False
 
 multi_class_options = [
     {
@@ -164,6 +170,10 @@ app.layout = html.Div(children=
             html.Div([
                 # tuners
                 html.Div([
+                    html.Button(
+                        id='model-trainer',
+                        children=['Train'],
+                    ),
                     html.H1('Tuners here'),
 
                     # penalty
@@ -270,7 +280,9 @@ app.layout = html.Div(children=
                 html.Div([
                     html.H1('Graph here'),
                     html.Div([
-                        dcc.Graph(),
+                        dcc.Graph(
+                            id='trained_model_graph',
+                        ),
                     ]),
                 ],
                     className='col-md-6'),
@@ -299,58 +311,100 @@ app.layout = html.Div(children=
 @app.callback(Output('asd', 'style'),
               [Input('classes_picker', 'value'), Input('samples_picker', 'value')])
 def set_data(classes, samples):
+    print('set data')
     # global n_clusters
     global n_classes
     global n_samples
+    global isDataSet
     n_classes = classes
     # n_clusters = clusters
     n_samples = samples
+
+    # isDataSet = True
+    print('set data 2')
     return {}
 
 
 @app.callback(Output('dataset_graph', 'figure'), [Input('data-generator', 'n_clicks')])
 def generate_data(clicks):
+    # if not clicks:
+    #     return
     # global n_clusters
     global n_classes
+    global isDataSet
     global n_samples
     global data
+    global isDataGenerated
+
+    if not isDataGenerated:
+        isDataGenerated = True
+        return go.Figure()
+
+    # isDataGenerated = False
+    # if not isDataSet:
+    #     n_classes = 2
+    #     n_samples = 300
+    #     isDataSet = True
+
+    isDataGenerated = False
+
+    print('generate data')
     x = d.make_classification(n_samples=n_samples, n_features=2, n_informative=2, n_repeated=0, n_redundant=0,
-                              n_classes=n_classes, n_clusters_per_class=1)
+                              n_classes=n_classes, n_clusters_per_class=1, shift=None)
     data = pd.DataFrame(x[0]).join(pd.DataFrame(x[1], columns=['Labels']))
-    print(data)
+    # print(data)
 
     traces = []
     for i in range(0, n_classes):
         x = data[data['Labels'] == i]
-        traces.append(go.Scatter(x=x[0], y=x[1], mode='markers'))
+        traces.append(go.Scatter(x=x[0], y=x[1], mode='markers', name='class ' + str(i)))
 
+    # train_model(0)
+    isDataGenerated = True
+    print('generate data 2')
     return go.Figure(data=traces)
-    # fig=px.scatter(data, x=data[0], y=data[1])
-    # return fig
-    # fig.update_layout()
-    # return go.Figure(data=[go.Scatter(x=data[0], y=data[1], mode='markers',)],
-    #                  layout=go.Layout(
-    #                      title='Cumulative Number of Confirmed, Deceased and Recovered Cases',
-    #                      xaxis={'title': 'Date'},
-    #                      yaxis={'title': 'Number of People affected'}
-    #
-    #                  ))
-    # return {
-    #     'data': go.Scatter(
-    #                        x=data[0],
-    #                        y=data[1],
-    #                        ),
-    #     'layout': go.Layout({
-    #         'xaxis': dict(
-    #             title='Date'
-    #         ),
-    #         'yaxis': dict(
-    #             title='Number of people affected',
-    #
-    #         ),
-    #         'title': 'Cumulative Cases Confirmed, Deceased and Recovered',
-    #     })
-    # }
+
+
+@app.callback(Output('trained_model_graph', 'figure'), [Input('model-trainer', 'n_clicks')])
+def train_model(clicks):
+    # if clicks == 0:
+    #     return
+    # global n_clusters
+    global n_classes
+    global n_samples
+    global data
+    global isDataGenerated
+    global canTrain
+
+    if not canTrain or not isDataGenerated:
+        canTrain = True
+        return go.Figure()
+
+    # if not isDataGenerated:
+    #     return
+
+    print('training model')
+    x_train, x_test, y_train, y_test = train_test_split(data.iloc[:, 0:2], data.iloc[:, 2], test_size=0.2)
+
+    model = LogisticRegression()
+    trained_model = model.fit(x_train, y_train)
+    prediction_train = trained_model.predict(x_train)
+    prediction_test = trained_model.predict(x_test)
+    prediction_total = trained_model.predict(data.iloc[:, 0:2])
+    coef = trained_model.coef_
+    # print(trained_model.intercept_)
+    # y = coef[0][0] * data[0] + coef[0][1]
+    y = -(data[0] * coef[0][0] + trained_model.intercept_[0]) / coef[0][1]
+
+    traces = []
+    for i in range(0, n_classes):
+        x = data[data['Labels'] == i]
+        traces.append(go.Scatter(x=x[0], y=x[1], mode='markers', name='class ' + str(i)))
+
+    traces.append(go.Scatter(x=data[0], y=y, mode='lines'))
+
+    print('training model 2')
+    return go.Figure(data=traces)
 
 
 if __name__ == "__main__":
