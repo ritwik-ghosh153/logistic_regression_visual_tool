@@ -11,6 +11,7 @@ import plotly.io as pio
 import sklearn.datasets as d
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
 
 # external CSS stylesheets
 external_stylesheets = [
@@ -47,7 +48,8 @@ n_samples = 300
 
 isDataSet = False
 isDataGenerated = False
-canTrain = False
+firstTraining = False
+firstGeneration = False
 
 multi_class_options = [
     {
@@ -94,6 +96,20 @@ solver_options = [
     },
 ]
 
+penalty_value = 'l2'
+dual_value = 'False'
+c_value = 1.0
+fit_intercept_value = 'True'
+random_state_value = 0
+solver_value = 'lbfgs'
+max_iter_value = 100,
+multi_class_value = 'auto'
+
+training_size = 0.8
+
+dual_show = False
+random_state_show = False
+
 app.layout = html.Div(children=
 [
     html.H1('Logistic Regression Visual Tool'),
@@ -101,7 +117,6 @@ app.layout = html.Div(children=
     # main playground
     html.Div(
         [
-
             # dataset generation
             html.Div([
                 html.Div([
@@ -170,35 +185,48 @@ app.layout = html.Div(children=
             html.Div([
                 # tuners
                 html.Div([
-                    html.Button(
-                        id='model-trainer',
-                        children=['Train'],
-                    ),
                     html.H1('Tuners here'),
+
+                    # training size
+
+                    dcc.Slider(
+                        id='training_size_picker',
+                        min=5,
+                        max=95,
+                        step=5,
+                        value=training_size,
+                    ),
 
                     # penalty
                     html.Div([
                         html.P("Penalty parameter", className="hyperparameter-title"),
-                        dcc.Dropdown(
-                            id='penalty_picker',
-                            options=penalty_options,
-                            value='l2'
-                        ),
+
+                        html.Div([
+                        ],
+                            id='penalty_picker_div', ),
+                        # dcc.Dropdown(
+                        #     id='penalty_picker',
+                        #     options=penalty_options,
+                        #     value=penalty_value
+                        # ),
                     ], className='dropdown'
                     ),
 
                     # dual
                     html.Div([
                         html.P("Dual parameter", className="hyperparameter-title"),
-                        dcc.RadioItems(
-                            id='dual_picker',
-                            options=[
-                                {'label': 'True', 'value': 'True'},
-                                {'label': 'False', 'value': 'False'},
-                            ],
-                            value='False'
-                        ),
-                    ], className="radio", id='dual-div') if True else html.H1('Dual here'),
+
+                        html.Div([], id='dual_picker_div')
+                        # dcc.RadioItems(
+                        #     id='dual_picker',
+                        #     options=[
+                        #         {'label': 'True', 'value': 'True'},
+                        #         {'label': 'False', 'value': 'False'},
+                        #     ],
+                        #     value='False'
+                        # ),
+                    ], className="radio", id='dual-div'),
+                    # if dual_show else html.H1('Dual here', id='dual_picker', ),
 
                     # C parameter
                     html.Div([
@@ -229,15 +257,12 @@ app.layout = html.Div(children=
                     # random_state parameter
                     html.Div([
                         html.P("random_state", className="hyperparameter-title"),
-                        dcc.Slider(
-                            id='random_state_picker',
-                            min=0,
-                            max=10,
-                            step=1,
-                            value=0,
+                        html.Div([
+                            # retrun updated random state picker here
+                        ], id='random_state_div',
                         ),
                     ], className='slider'
-                    ) if True else html.H1('random state picker here'),
+                    ),
 
                     # solver
                     html.Div([
@@ -245,7 +270,7 @@ app.layout = html.Div(children=
                         dcc.Dropdown(
                             id='solver_picker',
                             options=solver_options,
-                            value='lbfgs'
+                            value=solver_value
                         ),
                     ], className='dropdown'
                     ),
@@ -265,13 +290,18 @@ app.layout = html.Div(children=
 
                     # multi_class
                     html.Div([
-                        html.P("Solver parameter", className="hyperparameter-title"),
+                        html.P("multi class parameter", className="hyperparameter-title"),
                         dcc.Dropdown(
                             id='multi_class_picker',
                             options=multi_class_options,
-                            value='lbfgs'
+                            value=multi_class_value
                         ),
                     ], className='dropdown'
+                    ),
+
+                    html.Button(
+                        id='model-trainer',
+                        children=['Train'],
                     ),
 
                 ],
@@ -292,6 +322,9 @@ app.layout = html.Div(children=
                 html.Div(
                     [
                         html.H1('Data info here'),
+
+                        html.Div([], id='classification_score'),
+
                     ], className='col-md-6'
                 ),
                 html.Div(
@@ -308,10 +341,173 @@ app.layout = html.Div(children=
 
 # functions
 
+
+@app.callback(Output('random_state_div', 'children'),
+              [Input('solver_picker', 'value')])
+def update_random_state_picker(solver):
+    global solver_options
+    global solver_value
+    global random_state_value
+
+    if solver == 'sag' or solver == 'saga' or solver == 'lbfgs':
+        return dcc.Slider(
+            id='random_state_picker',
+            min=0,
+            max=10,
+            step=1,
+            value=random_state_value,
+        )
+    else:
+        return dcc.Slider(
+            id='random_state_picker',
+            min=0,
+            max=10,
+            step=1,
+            value=0,
+            disabled=True
+        )
+
+
+@app.callback(Output('dual_picker_div', 'children'),
+              [Input('solver_picker', 'value'), Input('penalty_picker', 'value')])
+def update_dual_picker(solver, penalty):
+    global solver_options
+    global solver_value
+    global multi_class_options
+    global multi_class_value
+    global penalty_options
+    global penalty_value
+    global dual_value
+    global c_value
+    global fit_intercept_value
+    global random_state_value
+    global max_iter_value
+    global dual_show
+    global random_state_show
+
+    if solver == 'liblinear' and penalty == 'l2':
+        return dcc.RadioItems(
+            id='dual_picker',
+            options=[
+                {'label': 'True', 'value': 'True'},
+                {'label': 'False', 'value': 'False'},
+            ],
+            value='False'
+        ),
+    else:
+        dual_value = False
+        return dcc.RadioItems(
+            id='dual_picker',
+            options=[
+                {'label': 'True', 'value': 'True', 'disabled': True},
+                {'label': 'False', 'value': 'False', 'disabled': True},
+            ],
+            value='False'
+        ),
+
+
+@app.callback(Output('penalty_picker_div', 'children'),
+              [Input('solver_picker', 'value')])
+def update_penalty_picker(solver):
+    global solver_options
+    global solver_value
+    global multi_class_options
+    global multi_class_value
+    global penalty_options
+    global penalty_value
+    global dual_value
+    global c_value
+    global fit_intercept_value
+    global random_state_value
+    global max_iter_value
+    global dual_show
+    global random_state_show
+
+    # penalty
+    if solver == 'newton-cg' or solver == 'sag' or solver == 'lbfgs':
+        penalty_options = [
+            {
+                'label': 'l2', 'value': 'l2',
+            },
+        ]
+        if penalty_value != 'l2':
+            penalty_value = 'l2'
+
+        return dcc.Dropdown(
+            id='penalty_picker',
+            options=penalty_options,
+            value=penalty_value
+        )
+
+    elif solver != 'saga':
+        penalty_options = [
+            {
+                'label': 'l1', 'value': 'l1',
+            },
+            {
+                'label': 'l2', 'value': 'l2',
+            },
+            {
+                'label': 'none', 'value': 'none',
+            },
+        ]
+        if penalty_value == 'elasticnet':
+            penalty_value = 'l2'
+
+        return dcc.Dropdown(
+            id='penalty_picker',
+            options=penalty_options,
+            value=penalty_value
+        )
+
+    elif solver != 'liblinear':
+        penalty_options = [
+            {
+                'label': 'l1', 'value': 'l1',
+            },
+            {
+                'label': 'l2', 'value': 'l2',
+            },
+            {
+                'label': 'elasticnet', 'value': 'elasticnet',
+            },
+        ]
+        if penalty_value == 'none':
+            penalty_value = 'l2'
+
+        return dcc.Dropdown(
+            id='penalty_picker',
+            options=penalty_options,
+            value=penalty_value
+        )
+
+    else:
+        penalty_options = [
+            {
+                'label': 'l1', 'value': 'l1',
+            },
+            {
+                'label': 'l2', 'value': 'l2',
+            },
+            {
+                'label': 'elasticnet', 'value': 'elasticnet',
+            },
+            {
+                'label': 'none', 'value': 'none’',
+            },
+        ]
+
+        return dcc.Dropdown(
+            id='penalty_picker',
+            options=penalty_options,
+            value=penalty_value
+        )
+
+
 @app.callback(Output('asd', 'style'),
               [Input('classes_picker', 'value'), Input('samples_picker', 'value')])
 def set_data(classes, samples):
-    print('set data')
+    # print('set data')
     # global n_clusters
     global n_classes
     global n_samples
@@ -321,7 +517,7 @@ def set_data(classes, samples):
     n_samples = samples
 
     # isDataSet = True
-    print('set data 2')
+    # print('set data 2')
     return {}
 
 
@@ -335,9 +531,10 @@ def generate_data(clicks):
     global n_samples
     global data
     global isDataGenerated
+    global firstGeneration
 
-    if not isDataGenerated:
-        isDataGenerated = True
+    if not firstGeneration:
+        firstGeneration = True
         return go.Figure()
 
     # isDataGenerated = False
@@ -348,7 +545,7 @@ def generate_data(clicks):
 
     isDataGenerated = False
 
-    print('generate data')
+    # print('generate data')
     x = d.make_classification(n_samples=n_samples, n_features=2, n_informative=2, n_repeated=0, n_redundant=0,
                               n_classes=n_classes, n_clusters_per_class=1, shift=None)
     data = pd.DataFrame(x[0]).join(pd.DataFrame(x[1], columns=['Labels']))
@@ -361,12 +558,17 @@ def generate_data(clicks):
 
     # train_model(0)
     isDataGenerated = True
-    print('generate data 2')
+    # print('generate data 2')
     return go.Figure(data=traces)
 
 
-@app.callback(Output('trained_model_graph', 'figure'), [Input('model-trainer', 'n_clicks')])
-def train_model(clicks):
+@app.callback([Output('trained_model_graph', 'figure'), Output('classification_score', 'children')],
+              [Input('model-trainer', 'n_clicks'), Input('penalty_picker', 'value'), Input('dual_picker', 'value'),
+               Input('c_picker', 'value'), Input('fit_intercept_picker', 'value'),
+               Input('random_state_picker', 'value'), Input('solver_picker', 'value'),
+               Input('max_iter_picker', 'value'),
+               Input('multi_class_picker', 'value'), Input('training_size_picker', 'value')])
+def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, max_iter, multi_class, train_size):
     # if clicks == 0:
     #     return
     # global n_clusters
@@ -374,23 +576,54 @@ def train_model(clicks):
     global n_samples
     global data
     global isDataGenerated
-    global canTrain
+    global firstTraining
+    global solver_value
+    global multi_class_value
+    global penalty_value
+    global dual_value
+    global c_value
+    global fit_intercept_value
+    global random_state_value
+    global max_iter_value
+    global training_size
 
-    if not canTrain or not isDataGenerated:
-        canTrain = True
-        return go.Figure()
+    print("solver_value=", solver_value)
+    print("solver=", solver)
+    solver_value = solver
+    print('value update')
+    multi_class_value = multi_class
+    penalty_value = penalty
+    dual_value = dual
+    fit_intercept_value = fit_intercept
+    random_state_value = random_state
+    max_iter_value = max_iter
+    training_size = train_size
+
+    if not isDataGenerated:
+        # firstTraining = True
+        return go.Figure(), ''
 
     # if not isDataGenerated:
     #     return
 
-    print('training model')
-    x_train, x_test, y_train, y_test = train_test_split(data.iloc[:, 0:2], data.iloc[:, 2], test_size=0.2)
+    # print(random_state_show)
+    # set_dependencies()
+    # print(random_state_show)
+    # print('training model')
+    x_train, x_test, y_train, y_test = train_test_split(data.iloc[:, 0:2], data.iloc[:, 2],
+                                                        test_size=(100 - training_size) / 100)
 
-    model = LogisticRegression()
+    model = LogisticRegression(penalty=penalty_value,
+                               # dual=eval(dual_value),
+                               C=c_value,
+                               # fit_intercept=fit_intercept_value,
+                               random_state=random_state_value, solver=solver_value, max_iter=max_iter_value,
+                               # multi_class='auto',
+                               warm_start=False, n_jobs=-1 if solver_value != 'liblinear' else None, )
     trained_model = model.fit(x_train, y_train)
-    prediction_train = trained_model.predict(x_train)
+    # prediction_train = trained_model.predict(x_train)
     prediction_test = trained_model.predict(x_test)
-    prediction_total = trained_model.predict(data.iloc[:, 0:2])
+    # prediction_total = trained_model.predict(data.iloc[:, 0:2])
     coef = trained_model.coef_
     # print(trained_model.intercept_)
     # y = coef[0][0] * data[0] + coef[0][1]
@@ -403,9 +636,174 @@ def train_model(clicks):
 
     traces.append(go.Scatter(x=data[0], y=y, mode='lines'))
 
-    print('training model 2')
-    return go.Figure(data=traces)
+    # print('training model 2')
+
+    classification = classification_report(y_test, prediction_test)
+
+    result = []
+    classification = classification.split("\n")
+
+    for i in [classification[i] for i in [2, 3, 5, 6, 7]]:
+        result.append(i.split())
+
+    print(classification)
+    print(trained_model.coef_, trained_model.intercept_)
+    return go.Figure(data=traces), html.Table([
+        html.Tr([
+                html.Th(),
+                html.Th("Precision"),
+                html.Th("Recall"),
+                html.Th("F1-Score"),
+                html.Th("Support"),
+            ]),
+        html.Tr([
+                html.Th("0"),
+                html.Td(result[0][1]),
+                html.Td(result[0][2]),
+                html.Td(result[0][3]),
+                html.Td(result[0][4]),
+            ]),
+        html.Tr([
+                html.Th("1"),
+                html.Td(result[1][1]),
+                html.Td(result[1][2]),
+                html.Td(result[1][3]),
+                html.Td(result[1][4]),
+            ]),
+        html.Tr([
+                html.Th("Accuracy"),
+                html.Td(),
+                html.Td(),
+                html.Td(result[2][1]),
+                html.Td(result[2][2]),
+            ]),
+        html.Tr([
+                html.Th("Macro Avg"),
+                html.Td(result[3][2]),
+                html.Td(result[3][3]),
+                html.Td(result[3][4]),
+                html.Td(result[3][5]),
+            ]),
+        html.Tr([
+                html.Th("Weighted Avg"),
+                html.Td(result[4][2]),
+                html.Td(result[4][3]),
+                html.Td(result[4][4]),
+                html.Td(result[4][5]),
+            ]),
+    ], className='table table-hover table-sm')
+
+
+def set_dependencies():
+    global solver_options
+    global solver_value
+    global multi_class_options
+    global multi_class_value
+    global penalty_options
+    global penalty_value
+    global dual_value
+    global c_value
+    global fit_intercept_value
+    global random_state_value
+    global max_iter_value
+    global dual_show
+    global random_state_show
+
+    # penalty
+    if solver_value == 'newton-cg' or solver_value == 'sag' or solver_value == 'lbfgs':
+        penalty_options = [
+            {
+                'label': 'l2', 'value': 'l2',
+            },
+        ]
+        if penalty_value != 'l2':
+            penalty_value = 'l2'
+
+    elif solver_value != 'saga':
+        penalty_options = [
+            {
+                'label': 'l1', 'value': 'l1',
+            },
+            {
+                'label': 'l2', 'value': 'l2',
+            },
+            {
+                'label': 'none', 'value': 'none’',
+            },
+        ]
+        if penalty_value == 'elasticnet':
+            penalty_value = 'l2'
+
+    elif solver_value != 'liblinear':
+        penalty_options = [
+            {
+                'label': 'l1', 'value': 'l1',
+            },
+            {
+                'label': 'l2', 'value': 'l2',
+            },
+            {
+                'label': 'elasticnet', 'value': 'elasticnet',
+            },
+        ]
+        if penalty_value == 'none':
+            penalty_value = 'l2'
+    else:
+        penalty_options = [
+            {
+                'label': 'l1', 'value': 'l1',
+            },
+            {
+                'label': 'l2', 'value': 'l2',
+            },
+            {
+                'label': 'elasticnet', 'value': 'elasticnet',
+            },
+            {
+                'label': 'none', 'value': 'none’',
+            },
+        ]
+
+    # dual
+    if solver_value == 'liblinear' and penalty_value == 'l2':
+        dual_show = True
+    else:
+        dual_show = False
+        dual_value = False
+
+    # random state
+    if solver_value == 'sag' or solver_value == 'saga' or solver_value == 'lbfgs':
+        random_state_show = True
+        print('changing status')
+    else:
+        random_state_show = False
+        random_state_value = 0
+
+    # multi class
+    if solver_value == 'liblinear':
+        multi_class_options = [
+            {
+                'label': 'auto', 'value': 'auto',
+            },
+            {
+                'label': 'ovr', 'value': 'ovr',
+            },
+        ]
+        if multi_class_value == 'multinomial':
+            multi_class_value = 'auto'
+    else:
+        multi_class_options = [
+            {
+                'label': 'auto', 'value': 'auto',
+            },
+            {
+                'label': 'ovr', 'value': 'ovr',
+            },
+            {
+                'label': 'multinomial', 'value': 'multinomial',
+            },
+        ]
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(port=3000, debug=False, dev_tools_ui=False, dev_tools_props_check=False)
