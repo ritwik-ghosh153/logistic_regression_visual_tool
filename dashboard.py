@@ -74,7 +74,7 @@ penalty_options = [
         'label': 'elasticnet', 'value': 'elasticnet',
     },
     {
-        'label': 'none', 'value': 'none’',
+        'label': 'none', 'value': 'none',
     },
 ]
 
@@ -109,6 +109,10 @@ training_size = 80
 
 dual_show = False
 random_state_show = False
+
+dynamic_id_dual = 'dual_picker'
+dynamic_id_penalty_picker = 'penalty_picker'
+dynamic_id_random_state_picker = 'random_state_picker'
 
 app.layout = html.Div(children=
 [
@@ -398,7 +402,30 @@ app.layout = html.Div(children=
                 ),
             ], className='row'),
         ], id="playground"),
-    html.Div([], id='asd')
+    html.Div([
+        dcc.RadioItems(
+            id=dynamic_id_dual,
+            options=[
+                {'label': 'True', 'value': 'True', 'disabled': True},
+                {'label': 'False', 'value': 'False', 'disabled': True},
+            ],
+            value='False'
+        ),
+        dcc.Dropdown(
+            id=dynamic_id_penalty_picker,
+            options=penalty_options,
+            value=penalty_value
+        ),
+        dcc.Slider(
+            id=dynamic_id_random_state_picker,
+            min=0,
+            max=10,
+            step=1,
+            value=0,
+            disabled=True,
+        ),
+    ], id='asd'),
+
 ],
     className='container')
 
@@ -412,6 +439,9 @@ def update_random_state_picker(solver):
     global solver_options
     global solver_value
     global random_state_value
+    global dynamic_id_random_state_picker
+
+    dynamic_id_random_state_picker = 'dummy3'
 
     if solver == 'sag' or solver == 'saga' or solver == 'lbfgs':
         return dcc.Slider(
@@ -474,8 +504,10 @@ def update_dual_picker(solver, penalty):
     global max_iter_value
     global dual_show
     global random_state_show
+    global dynamic_id_dual
 
     if solver == 'liblinear' and penalty == 'l2':
+        dynamic_id_dual = 'dummy1'
         return dcc.RadioItems(
             id='dual_picker',
             options=[
@@ -486,6 +518,7 @@ def update_dual_picker(solver, penalty):
         ),
     else:
         dual_value = False
+        dynamic_id_dual = 'dummy1'
         return dcc.RadioItems(
             id='dual_picker',
             options=[
@@ -512,6 +545,9 @@ def update_penalty_picker(solver):
     global max_iter_value
     global dual_show
     global random_state_show
+    global dynamic_id_penalty_picker
+
+    dynamic_id_penalty_picker = 'dummy2'
 
     # penalty
     if solver == 'newton-cg' or solver == 'sag' or solver == 'lbfgs':
@@ -583,7 +619,7 @@ def update_penalty_picker(solver):
                 'label': 'elasticnet', 'value': 'elasticnet',
             },
             {
-                'label': 'none', 'value': 'none’',
+                'label': 'none', 'value': 'none',
             },
         ]
 
@@ -839,7 +875,7 @@ def set_dependencies():
                 'label': 'l2', 'value': 'l2',
             },
             {
-                'label': 'none', 'value': 'none’',
+                'label': 'none', 'value': 'none',
             },
         ]
         if penalty_value == 'elasticnet':
@@ -871,7 +907,7 @@ def set_dependencies():
                 'label': 'elasticnet', 'value': 'elasticnet',
             },
             {
-                'label': 'none', 'value': 'none’',
+                'label': 'none', 'value': 'none',
             },
         ]
 
@@ -917,4 +953,6 @@ def set_dependencies():
 
 
 if __name__ == "__main__":
-    app.run_server(port=3000, debug=True, dev_tools_ui=False, dev_tools_props_check=False)
+    app.run_server(port=3000, debug=True,
+                   # dev_tools_ui=False, dev_tools_props_check=False
+                   )
