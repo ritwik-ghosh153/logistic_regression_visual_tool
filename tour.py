@@ -151,32 +151,45 @@ app.layout = html.Div(children=sample_lines,
 
 app.layout = html.Div(children=
 [
-    html.H1('Logistic Regression Tour'),
+    html.H1('Logistic Regression Tour', className="text-center pt-5"),
 
-    html.Div([
-        dcc.Graph(
-            id='dataset_graph',
-            figure=go.Figure(data=[class_1_data, class_2_data])
-        ),
+    html.P("Before jumping into what LOGISTIC REGRESSION is let’s have a basic understanding of what exactly a “Linear Regression “ is. So, basically Linear Regression is a statistical method which is used to find an equation that can predict an outcome for a binary variable i.e Y, based on one or more response variables i.e X. Also, the response variable in linear regression strictly requires continuous data."),
+    html.P("Similarly, Logisitc Regression is also same as Linear regression which is used to find an equation to predict an outcome based on response variables but the only difference is that the model here does not strictly require continuous data, it can be both categorical or continuous. Logistic Regression can be used for various classification problems such as spam detection, Diabetes prediction,  whether the user will click on a given advertisement link or not and many more. To fit the final model, Logistic Regression uses an “iterative maximum likelihood” method rather than a least squares and “log odds ratio” rather than probabilities. Therefore, these methods are more appropriate for non normally distributed data which gives more freedom to researcher."),
+    html.P(" Logistic regression is used to describe data and to explain the relationship between one dependent binary variable and one or more nominal, ordinal, interval or ratio-level independent variables."),
+
+    html.H4("The general Linear Regression Equation is:"),
+
+    html.Img(src="images/equation.png"),
+    html.P("Where, y is dependent variable and x1, x2 ... and Xn are explanatory variables."),
+
+    html.H4("Lets understand how it works!Lets understand how it works!"),
+    html.P("Basically Logistic Regression uses logistic function which is a “Sigmoid Function” that gives an ‘S’ shaped curve by taking any real input value and giving an output of a value between zero and one. "),
+    html.P("Some of the conditions are:"),
+
+    html.Ul([
+    	html.Li("If the curve goes to positive infinity, Y predicted will become 1 and if the curve goes to negative infinity, Y predicted will become 0."),
+    	html.Li("Similarly, if the output is more than 0.5 then we can classify the outcome as 1 or YES and if the output is less than 0.5 then it is classified as 0 or NO. For example if the output is 0.75 then we can say that there is 75 percent chance that a student will pass the exam. ")
     ]),
+
+    html.H4("Basic diagram for logistic function:"),
+
+
+    html.H2("Showing logistic regression using gradient descent approach:"),
 
     html.Div([
 
     	html.Div(sample_lines, className="carousel-inner"),
 
     	html.A([
-    		html.Span(className="carousel-control-prev-icon", **{"aria-hidden":"true"})
+    		html.Span(className="carousel-control-prev-icon bg-dark", **{"aria-hidden":"true"})
     	], className="carousel-control-prev", href="#graphs_showing_regression", role="button", **{"data-slide":"prev"}),
 
     	html.A([
-    		html.Span(className="carousel-control-next-icon", **{"aria-hidden":"true"})
+    		html.Span(className="carousel-control-next-icon bg-dark", **{"aria-hidden":"true"})
     	], className="carousel-control-next", href="#graphs_showing_regression", role="button", **{"data-slide":"next"})
 
     ], className = "carousel slide", id="graphs_showing_regression", **{"data-ride":"carousel"})
 
-
-  
-    # html.Div(children=sample_lines)
 ],
     className='container')
 

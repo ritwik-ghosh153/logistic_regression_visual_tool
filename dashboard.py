@@ -74,7 +74,7 @@ penalty_options = [
         'label': 'elasticnet', 'value': 'elasticnet',
     },
     {
-        'label': 'none', 'value': 'none’',
+        'label': 'none', 'value': 'none'
     },
 ]
 
@@ -583,7 +583,7 @@ def update_penalty_picker(solver):
                 'label': 'elasticnet', 'value': 'elasticnet',
             },
             {
-                'label': 'none', 'value': 'none’',
+                'label': 'none', 'value': 'none',
             },
         ]
 
@@ -839,7 +839,7 @@ def set_dependencies():
                 'label': 'l2', 'value': 'l2',
             },
             {
-                'label': 'none', 'value': 'none’',
+                'label': 'none', 'value': 'none',
             },
         ]
         if penalty_value == 'elasticnet':
@@ -871,7 +871,7 @@ def set_dependencies():
                 'label': 'elasticnet', 'value': 'elasticnet',
             },
             {
-                'label': 'none', 'value': 'none’',
+                'label': 'none', 'value': 'none',
             },
         ]
 
@@ -915,6 +915,5 @@ def set_dependencies():
             },
         ]
 
-
-if __name__ == "__main__":
-    app.run_server(port=3000, debug=True, dev_tools_ui=False, dev_tools_props_check=False)
+if __name__ == '__main__':
+    app.run_server(debug=False,dev_tools_ui=False,dev_tools_props_check=False)
