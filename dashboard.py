@@ -11,7 +11,7 @@ import plotly.io as pio
 import sklearn.datasets as d
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
 
 # external CSS stylesheets
 external_stylesheets = [
@@ -105,7 +105,7 @@ solver_value = 'lbfgs'
 max_iter_value = 100,
 multi_class_value = 'auto'
 
-training_size = 0.8
+training_size = 80
 
 dual_show = False
 random_state_show = False
@@ -125,17 +125,17 @@ app.layout = html.Div(children=
 
                 html.Div([
                     # classes parameter
-                    html.Div([
-                        html.P("Number of classes in data", className="hyperparameter-title"),
-                        dcc.Slider(
-                            id='classes_picker',
-                            min=2,
-                            max=4,
-                            step=1,
-                            value=2,
-                        ),
-                    ], className='slider'
-                    ),
+                    # html.Div([
+                    #     html.P("Number of classes in data", className="hyperparameter-title"),
+                    #     dcc.Slider(
+                    #         id='classes_picker',
+                    #         min=2,
+                    #         max=4,
+                    #         step=1,
+                    #         value=2,
+                    #     ),
+                    # ], className='slider'
+                    # ),
 
                     # clusters parameter
                     # html.Div([
@@ -159,6 +159,21 @@ app.layout = html.Div(children=
                             max=1000,
                             step=5,
                             value=300,
+                            tooltip={'always_visible': False, 'placement': 'bottomLeft'},
+                            updatemode='drag',
+                            marks={
+                                10: {'label': '10'},
+                                100: {'label': '100'},
+                                200: {'label': '200'},
+                                300: {'label': '300'},
+                                400: {'label': '400'},
+                                500: {'label': '500'},
+                                600: {'label': '600'},
+                                700: {'label': '700'},
+                                800: {'label': '800'},
+                                900: {'label': '900'},
+                                1000: {'label': '1000'},
+                            }
                         ),
                     ], className='slider'
                     ),
@@ -189,13 +204,38 @@ app.layout = html.Div(children=
 
                     # training size
 
-                    dcc.Slider(
-                        id='training_size_picker',
-                        min=5,
-                        max=95,
-                        step=5,
-                        value=training_size,
-                    ),
+                    html.Div([
+                        dcc.Slider(
+                            id='training_size_picker',
+                            min=5,
+                            max=95,
+                            step=1,
+                            value=training_size,
+                            tooltip={'always_visible': False, 'placement': 'bottomLeft'},
+                            updatemode='drag',
+                            marks={
+                                5: {'label': '5'},
+                                10: {'label': '10'},
+                                15: {'label': '15'},
+                                20: {'label': '20'},
+                                25: {'label': '25'},
+                                30: {'label': '30'},
+                                35: {'label': '35'},
+                                40: {'label': '40'},
+                                45: {'label': '45'},
+                                50: {'label': '50'},
+                                55: {'label': '55'},
+                                60: {'label': '60'},
+                                65: {'label': '65'},
+                                70: {'label': '70'},
+                                75: {'label': '75'},
+                                80: {'label': '80'},
+                                85: {'label': '85'},
+                                90: {'label': '90'},
+                                95: {'label': '95'},
+                            }
+                        ),
+                    ], className='slider'),
 
                     # penalty
                     html.Div([
@@ -237,6 +277,16 @@ app.layout = html.Div(children=
                             max=5,
                             step=0.1,
                             value=1.0,
+                            tooltip={'always_visible': False, 'placement': 'bottomLeft'},
+                            updatemode='drag',
+                            marks={
+                                0: {'label': '0'},
+                                1: {'label': '1'},
+                                2: {'label': '2'},
+                                3: {'label': '3'},
+                                4: {'label': '4'},
+                                5: {'label': '5'},
+                            }
                         ),
                     ], className='slider'
                     ),
@@ -284,20 +334,29 @@ app.layout = html.Div(children=
                             max=300,
                             step=1,
                             value=100,
+                            marks={
+                                1: {'label': '1'},
+                                50: {'label': '50'},
+                                100: {'label': '100'},
+                                150: {'label': '150'},
+                                200: {'label': '200'},
+                                250: {'label': '250'},
+                                300: {'label': '300'}
+                            }
                         ),
                     ], className='slider'
                     ),
 
                     # multi_class
-                    html.Div([
-                        html.P("multi class parameter", className="hyperparameter-title"),
-                        dcc.Dropdown(
-                            id='multi_class_picker',
-                            options=multi_class_options,
-                            value=multi_class_value
-                        ),
-                    ], className='dropdown'
-                    ),
+                    # html.Div([
+                    #     html.P("multi class parameter", className="hyperparameter-title"),
+                    #     dcc.Dropdown(
+                    #         id='multi_class_picker',
+                    #         options=multi_class_options,
+                    #         value=multi_class_value
+                    #     ),
+                    # ], className='dropdown'
+                    # ),
 
                     html.Button(
                         id='model-trainer',
@@ -330,6 +389,11 @@ app.layout = html.Div(children=
                 html.Div(
                     [
                         html.H1('Results here'),
+                        html.Div([
+                            dcc.Graph(
+                                id='confusion_matrix',
+                            )
+                        ], className='heatmap')
                     ], className='col-md-6'
                 ),
             ], className='row'),
@@ -356,6 +420,19 @@ def update_random_state_picker(solver):
             max=10,
             step=1,
             value=random_state_value,
+            marks={
+                0: {'label': '0'},
+                1: {'label': '1'},
+                2: {'label': '2'},
+                3: {'label': '3'},
+                4: {'label': '4'},
+                5: {'label': '5'},
+                6: {'label': '6'},
+                7: {'label': '7'},
+                8: {'label': '8'},
+                9: {'label': '9'},
+                10: {'label': '10'},
+            }
         )
     else:
         return dcc.Slider(
@@ -364,7 +441,20 @@ def update_random_state_picker(solver):
             max=10,
             step=1,
             value=0,
-            disabled=True
+            disabled=True,
+            marks={
+                0: {'label': '0'},
+                1: {'label': '1'},
+                2: {'label': '2'},
+                3: {'label': '3'},
+                4: {'label': '4'},
+                5: {'label': '5'},
+                6: {'label': '6'},
+                7: {'label': '7'},
+                8: {'label': '8'},
+                9: {'label': '9'},
+                10: {'label': '10'},
+            }
         )
 
 
@@ -505,14 +595,14 @@ def update_penalty_picker(solver):
 
 
 @app.callback(Output('asd', 'style'),
-              [Input('classes_picker', 'value'), Input('samples_picker', 'value')])
-def set_data(classes, samples):
+              [Input('samples_picker', 'value')])
+def set_data(samples):
     # print('set data')
     # global n_clusters
     global n_classes
     global n_samples
     global isDataSet
-    n_classes = classes
+    n_classes = 2
     # n_clusters = clusters
     n_samples = samples
 
@@ -559,16 +649,24 @@ def generate_data(clicks):
     # train_model(0)
     isDataGenerated = True
     # print('generate data 2')
-    return go.Figure(data=traces)
+    fig = go.Figure(data=traces)
+    return fig.update_layout(
+        title="Generated Data",
+        yaxis=dict(
+            range=(min(data.iloc[:, 1]) - 1, max(data.iloc[:, 1]) + 1),
+            constrain='domain'
+        )
+    )
 
 
-@app.callback([Output('trained_model_graph', 'figure'), Output('classification_score', 'children')],
+@app.callback([Output('trained_model_graph', 'figure'), Output('classification_score', 'children'),
+               Output('confusion_matrix', 'figure'), ],
               [Input('model-trainer', 'n_clicks'), Input('penalty_picker', 'value'), Input('dual_picker', 'value'),
                Input('c_picker', 'value'), Input('fit_intercept_picker', 'value'),
                Input('random_state_picker', 'value'), Input('solver_picker', 'value'),
                Input('max_iter_picker', 'value'),
-               Input('multi_class_picker', 'value'), Input('training_size_picker', 'value')])
-def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, max_iter, multi_class, train_size):
+               Input('training_size_picker', 'value')])
+def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, max_iter, train_size):
     # if clicks == 0:
     #     return
     # global n_clusters
@@ -578,7 +676,7 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
     global isDataGenerated
     global firstTraining
     global solver_value
-    global multi_class_value
+    # global multi_class_value
     global penalty_value
     global dual_value
     global c_value
@@ -591,7 +689,6 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
     print("solver=", solver)
     solver_value = solver
     print('value update')
-    multi_class_value = multi_class
     penalty_value = penalty
     dual_value = dual
     fit_intercept_value = fit_intercept
@@ -601,7 +698,7 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
 
     if not isDataGenerated:
         # firstTraining = True
-        return go.Figure(), ''
+        return go.Figure(), '', go.Figure()
 
     # if not isDataGenerated:
     #     return
@@ -636,7 +733,11 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
 
     traces.append(go.Scatter(x=data[0], y=y, mode='lines'))
 
-    # print('training model 2')
+    # confusion martix generation
+
+    matrix = confusion_matrix(y_test, prediction_test)
+
+    # classification report generation
 
     classification = classification_report(y_test, prediction_test)
 
@@ -646,52 +747,62 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
     for i in [classification[i] for i in [2, 3, 5, 6, 7]]:
         result.append(i.split())
 
-    print(classification)
-    print(trained_model.coef_, trained_model.intercept_)
-    return go.Figure(data=traces), html.Table([
+    # print(classification)
+    # print(trained_model.coef_, trained_model.intercept_)
+    fig = go.Figure(data=traces)
+    return fig.update_layout(title="Trained Model",
+                             yaxis=dict(
+                                 range=(min(data.iloc[:, 1]) - 1, max(data.iloc[:, 1]) + 1),
+                                 constrain='domain'
+                             )), html.Table([
         html.Tr([
-                html.Th(),
-                html.Th("Precision"),
-                html.Th("Recall"),
-                html.Th("F1-Score"),
-                html.Th("Support"),
-            ]),
+            html.Th(),
+            html.Th("Precision"),
+            html.Th("Recall"),
+            html.Th("F1-Score"),
+            html.Th("Support"),
+        ]),
         html.Tr([
-                html.Th("0"),
-                html.Td(result[0][1]),
-                html.Td(result[0][2]),
-                html.Td(result[0][3]),
-                html.Td(result[0][4]),
-            ]),
+            html.Th("0"),
+            html.Td(result[0][1]),
+            html.Td(result[0][2]),
+            html.Td(result[0][3]),
+            html.Td(result[0][4]),
+        ]),
         html.Tr([
-                html.Th("1"),
-                html.Td(result[1][1]),
-                html.Td(result[1][2]),
-                html.Td(result[1][3]),
-                html.Td(result[1][4]),
-            ]),
+            html.Th("1"),
+            html.Td(result[1][1]),
+            html.Td(result[1][2]),
+            html.Td(result[1][3]),
+            html.Td(result[1][4]),
+        ]),
         html.Tr([
-                html.Th("Accuracy"),
-                html.Td(),
-                html.Td(),
-                html.Td(result[2][1]),
-                html.Td(result[2][2]),
-            ]),
+            html.Th("Accuracy"),
+            html.Td(),
+            html.Td(),
+            html.Td(result[2][1]),
+            html.Td(result[2][2]),
+        ]),
         html.Tr([
-                html.Th("Macro Avg"),
-                html.Td(result[3][2]),
-                html.Td(result[3][3]),
-                html.Td(result[3][4]),
-                html.Td(result[3][5]),
-            ]),
+            html.Th("Macro Avg"),
+            html.Td(result[3][2]),
+            html.Td(result[3][3]),
+            html.Td(result[3][4]),
+            html.Td(result[3][5]),
+        ]),
         html.Tr([
-                html.Th("Weighted Avg"),
-                html.Td(result[4][2]),
-                html.Td(result[4][3]),
-                html.Td(result[4][4]),
-                html.Td(result[4][5]),
-            ]),
-    ], className='table table-hover table-sm')
+            html.Th("Weighted Avg"),
+            html.Td(result[4][2]),
+            html.Td(result[4][3]),
+            html.Td(result[4][4]),
+            html.Td(result[4][5]),
+        ]),
+    ], className='table table-hover table-sm'), go.Figure(data=[{
+        "type": "heatmap",
+        "x": ["Predicted 0's", "Predicted 1's"],
+        "y": ["Actual 0's", "Actual 1's"],
+        "z": matrix
+    }])
 
 
 def set_dependencies():
@@ -806,4 +917,4 @@ def set_dependencies():
 
 
 if __name__ == "__main__":
-    app.run_server(port=3000, debug=False, dev_tools_ui=False, dev_tools_props_check=False)
+    app.run_server(port=3000, debug=True, dev_tools_ui=False, dev_tools_props_check=False)
