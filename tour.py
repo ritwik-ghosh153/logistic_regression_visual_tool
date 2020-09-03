@@ -130,7 +130,7 @@ for i, result in zip(lines, report):
                                 html.Td(result[4][5]),
                             ]),
                         ], className='table table-hover table-sm')
-                    ], className="col-md-12 table-responsive"),
+                    ], className="col-md-12 table-responsive bg-white mt-3"),
     			], className="row")
 		  ], className="carousel-item container active"))
 	else:
@@ -198,7 +198,7 @@ for i, result in zip(lines, report):
                                 html.Td(result[4][5]),
                             ]),
                         ], className='table table-hover table-sm')
-                    ], className="col-md-12 table-responsive"),
+                    ], className="col-md-12 table-responsive bg-white mt-3"),
                 ], className="row")
 
 
@@ -230,7 +230,7 @@ layout_tour = html.Div([
 
         html.H4("The general Linear Regression Equation is:"),
 
-        html.Img(src=os.getcwd()+"/images/equation.png"),
+        html.Img(src="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/blob/develop/images/equation.png?raw=true", className="rounded mx-auto d-block"),
         html.P("Where, y is dependent variable and x1, x2 ... and Xn are explanatory variables."),
 
         html.Hr(),
@@ -266,7 +266,7 @@ layout_tour = html.Div([
         		html.Span(className="carousel-control-next-icon bg-dark p-3", **{"aria-hidden":"true"})
         	], className="carousel-control-next", href="#graphs_showing_regression", role="button", **{"data-slide":"next"})
 
-        ], className = "carousel slide", id="graphs_showing_regression", **{"data-ride":"carousel"})
+        ], className = "carousel slide mb-3", id="graphs_showing_regression", **{"data-ride":"carousel"})
 
     ], className='container mt-2')
 ])

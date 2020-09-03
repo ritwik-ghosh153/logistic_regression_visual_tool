@@ -1,3 +1,10 @@
+body {
+	/*E3EEFF*//*
+	FFF0D6*/
+	background-color: rgb(244, 246, 255);
+	/*background-color: #fbecec;*/
+}
+
 #asd {
 	display: none;
 }
@@ -7,3 +14,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+label {
+	margin-left: 2%;
+	margin-right: 1%;
+}

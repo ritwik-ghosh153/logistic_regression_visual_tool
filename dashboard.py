@@ -63,6 +63,29 @@ app = dash.Dash(__name__, external_scripts=external_scripts, external_stylesheet
                 )
 server = app.server
 
+app.index_string = '''
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="A visual tool to visualize and understand change in logistic regression on changing hyper-parameters.">
+        <meta name="keywords" content="Logistic Regression, Visualizsation, Logistic, Regression, Data Science, Machine Learning, SKLearn">
+        <title>Logistic Regression Visual Tool</title>
+        {%favicon%}
+        {%css%}
+    </head>
+    <body>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+    </body>
+</html>
+'''
+
 
 
 # setting initial values
@@ -150,336 +173,354 @@ layout_main = html.Div([
     ], className="nav nav-pills flex-column flex-sm-row bg-dark"),
 
     html.Div(children=
-[
+    [
 
 
-    html.H1('Logistic Regression Visual Tool', className="text-center"),
-    html.Hr([]),
-    # main playground
-    html.Div(
-        [
-            # dataset generation
-            html.Div([
-                html.Div([
-                    html.H4('Dataset generation'),
-                ], className='col-md-12'),
-
-                html.Div([
-                    # classes parameter
-                    # html.Div([
-                    #     html.P("Number of classes in data", className="hyperparameter-title"),
-                    #     dcc.Slider(
-                    #         id='classes_picker',
-                    #         min=2,
-                    #         max=4,
-                    #         step=1,
-                    #         value=2,
-                    #     ),
-                    # ], className='slider'
-                    # ),
-
-                    # clusters parameter
-                    # html.Div([
-                    #     html.P("Number of clusters in data", className="hyperparameter-title"),
-                    #     dcc.Slider(
-                    #         id='clusters_picker',
-                    #         min=1,
-                    #         max=5,
-                    #         step=1,
-                    #         value=1,
-                    #     ),
-                    # ], className='slider'
-                    # ),
-
-                    # samples parameter
-                    html.Div([
-                        html.H6([
-                            html.Span("Number of samples in data:", title="Used to generate dataset of given number of rows")
-                        ], className="hyperparameter-title"),
-                        dcc.Slider(
-                            id='samples_picker',
-                            min=10,
-                            max=1000,
-                            step=5,
-                            value=300,
-                            tooltip={'always_visible': False, 'placement': 'bottomLeft'},
-                            updatemode='drag',
-                            marks={
-                                10: {'label': '10'},
-                                100: {'label': '100'},
-                                200: {'label': '200'},
-                                300: {'label': '300'},
-                                400: {'label': '400'},
-                                500: {'label': '500'},
-                                600: {'label': '600'},
-                                700: {'label': '700'},
-                                800: {'label': '800'},
-                                900: {'label': '900'},
-                                1000: {'label': '1000'},
-                            }
-                        ),
-                    ], className='border slider bg-light p-2'),
-
-                    # data generation button
-                    html.Button(
-                        id='data-generator',
-                        children=['Generate'],
-                        className="btn btn-info m-3"
-                    ),
-                ], className='col-md-6'),
-                # data graph
+        html.H1('Logistic Regression Visual Tool', className="text-center"),
+        html.Hr([]),
+        # main playground
+        html.Div(
+            [
+                # dataset generation
                 html.Div([
                     html.Div([
-                        dcc.Graph(
-                            id='dataset_graph',
-                            # figure='fig'
-                        ),
-                    ], className="border bg-light"),
-
-                ], className='col-md-6'),
-
-            ], className='row'),
-
-            html.Hr(className="m-4"),
-
-            # upper half
-            html.Div([
-                # tuners
-                html.Div([
-                    html.H4('Tuners here'),
-
-                    # training size
+                        html.H4('Dataset generation'),
+                    ], className='col-md-12'),
 
                     html.Div([
-
-                        html.H6([html.Span("Training Size:", title="Specify Training Size Of Model")]),
-
-                        dcc.Slider(
-                            id='training_size_picker',
-                            min=5,
-                            max=95,
-                            step=1,
-                            value=training_size,
-                            tooltip={'always_visible': False, 'placement': 'bottomLeft'},
-                            updatemode='drag',
-                            marks={
-                                5: {'label': '5'},
-                                10: {'label': '10'},
-                                15: {'label': '15'},
-                                20: {'label': '20'},
-                                25: {'label': '25'},
-                                30: {'label': '30'},
-                                35: {'label': '35'},
-                                40: {'label': '40'},
-                                45: {'label': '45'},
-                                50: {'label': '50'},
-                                55: {'label': '55'},
-                                60: {'label': '60'},
-                                65: {'label': '65'},
-                                70: {'label': '70'},
-                                75: {'label': '75'},
-                                80: {'label': '80'},
-                                85: {'label': '85'},
-                                90: {'label': '90'},
-                                95: {'label': '95'},
-                            }
-                        ),
-                    ], className='border bg-light p-2'),
-
-                    # penalty
-                    html.Div([
-                        html.H6([
-                            html.Span("Penalty parameter:", title="Used to specify the norm used in the penalization. The ‘newton-cg’, ‘sag’ and ‘lbfgs’ solvers support only l2 penalties. ‘elasticnet’ is only supported by the ‘saga’ solver. If ‘none’ (not supported by the liblinear solver), no regularization is applied.")], className="hyperparameter-title"),
-
-                        html.Div([
-                        ],
-                            id='penalty_picker_div', ),
-                        # dcc.Dropdown(
-                        #     id='penalty_picker',
-                        #     options=penalty_options,
-                        #     value=penalty_value
+                        # classes parameter
+                        # html.Div([
+                        #     html.P("Number of classes in data", className="hyperparameter-title"),
+                        #     dcc.Slider(
+                        #         id='classes_picker',
+                        #         min=2,
+                        #         max=4,
+                        #         step=1,
+                        #         value=2,
+                        #     ),
+                        # ], className='slider'
                         # ),
-                    ], className='border bg-light p-2 mt-2'
-                    ),
 
-                    # dual
-                    html.Div([
-                        html.H6([html.Span("Dual parameter:", title="Dual or primal formulation. Dual formulation is only implemented for l2 penalty with liblinear solver. Prefer dual=False when n_samples > n_features.")], className="hyperparameter-title"),
-
-                        html.Div([], id='dual_picker_div')
-                        # dcc.RadioItems(
-                        #     id='dual_picker',
-                        #     options=[
-                        #         {'label': 'True', 'value': 'True'},
-                        #         {'label': 'False', 'value': 'False'},
-                        #     ],
-                        #     value='False'
+                        # clusters parameter
+                        # html.Div([
+                        #     html.P("Number of clusters in data", className="hyperparameter-title"),
+                        #     dcc.Slider(
+                        #         id='clusters_picker',
+                        #         min=1,
+                        #         max=5,
+                        #         step=1,
+                        #         value=1,
+                        #     ),
+                        # ], className='slider'
                         # ),
-                    ], className="border bg-light p-2 mt-2", id='dual-div'),
-                    # if dual_show else html.H1('Dual here', id='dual_picker', ),
 
-                    # C parameter
-                    html.Div([
-                        html.H6([html.Span("C parameter:", title="Inverse of regularization strength; must be a positive float. Like in support vector machines, smaller values specify stronger regularization.")], className="hyperparameter-title"),
-                        dcc.Slider(
-                            id='c_picker',
-                            min=0,
-                            max=5,
-                            step=0.1,
-                            value=1.0,
-                            tooltip={'always_visible': False, 'placement': 'bottomLeft'},
-                            updatemode='drag',
-                            marks={
-                                0: {'label': '0'},
-                                1: {'label': '1'},
-                                2: {'label': '2'},
-                                3: {'label': '3'},
-                                4: {'label': '4'},
-                                5: {'label': '5'},
-                            }
-                        ),
-                    ], className='border bg-light p-2 mt-2'
-                    ),
-
-                    # fit_intercept
-                    html.Div([
-                        html.H6([html.Span("Fit intercept:", title="Specifies if a constant (a.k.a. bias or intercept) should be added to the decision function.")], className="hyperparameter-title"),
-                        dcc.RadioItems(
-                            id='fit_intercept_picker',
-                            options=[
-                                {'label': 'True', 'value': 'True'},
-                                {'label': 'False', 'value': 'False'},
-                            ],
-                            value='True'
-                        ),
-                    ], className="border bg-light p-2 mt-2"),
-
-                    # random_state parameter
-                    html.Div([
-                        html.H6([html.Span("Random State", title="Whenever randomization is part of a Scikit-learn algorithm, a random_state parameter may be provided to control the random number generator used. Note that the mere presence of random_state doesn’t mean that randomization is always used, as it may be dependent on another parameter, e.g. shuffle, being set.")], className="hyperparameter-title"),
+                        # samples parameter
                         html.Div([
-                            # retrun updated random state picker here
-                        ], id='random_state_div',
-                        ),
-                    ], className='border bg-light p-2 mt-2'
-                    ),
+                            html.H6([
+                                html.Span("Number of samples in data:", title="Used to generate dataset of given number of rows")
+                            ], className="hyperparameter-title"),
+                            dcc.Slider(
+                                id='samples_picker',
+                                min=10,
+                                max=1000,
+                                step=5,
+                                value=300,
+                                tooltip={'always_visible': False, 'placement': 'bottomLeft'},
+                                updatemode='drag',
+                                marks={
+                                    10: {'label': '10'},
+                                    100: {'label': '100'},
+                                    200: {'label': '200'},
+                                    300: {'label': '300'},
+                                    400: {'label': '400'},
+                                    500: {'label': '500'},
+                                    600: {'label': '600'},
+                                    700: {'label': '700'},
+                                    800: {'label': '800'},
+                                    900: {'label': '900'},
+                                    1000: {'label': '1000'},
+                                }
+                            ),
+                        ], className='border slider bg-white p-2'),
 
-                    # solver
+                        # data generation button
+                        html.Button(
+                            id='data-generator',
+                            children=['Generate'],
+                            className="btn btn-info m-3"
+                        ),
+
+                        html.P("The data generated on the click of this button is random, yet follows a pattern to allow for proper classification by forming two major clusters (the two classes of the data). Since logistic regression classier works best of two-class classifications, we shall work with two classes. The graph offers a visualisation of the data, how it is clustered and its spread on the 2D plain. Next, we shall see how tweaking the various hyperparameters, as offered by the sklearn.linear_model.LogisticRegression library of the data, allows us to fine tune our classifier model and how that affects the resulting accuracy.", className="m-2"),
+                    ], className='col-md-6'),
+                    # data graph
                     html.Div([
-                        html.H6([html.Span("Solver parameter:", title="Algorithm to use in the optimization problem.")], className="hyperparameter-title"),
-                        dcc.Dropdown(
-                            id='solver_picker',
-                            options=solver_options,
-                            value=solver_value
-                        ),
-                    ], className='border bg-light p-2 mt-2'
-                    ),
-
-                    # max_iter
-                    html.Div([
-                        html.H6([html.Span("Max Iter:", title="Maximum number of iterations taken for the solvers to converge.")], className="hyperparameter-title"),
-                        dcc.Slider(
-                            id='max_iter_picker',
-                            min=1,
-                            max=300,
-                            step=1,
-                            value=100,
-                            marks={
-                                1: {'label': '1'},
-                                50: {'label': '50'},
-                                100: {'label': '100'},
-                                150: {'label': '150'},
-                                200: {'label': '200'},
-                                250: {'label': '250'},
-                                300: {'label': '300'}
-                            }
-                        ),
-                    ], className='border bg-light p-2 mt-2'
-                    ),
-
-                    # multi_class
-                    # html.Div([
-                    #     html.P("multi class parameter", className="hyperparameter-title"),
-                    #     dcc.Dropdown(
-                    #         id='multi_class_picker',
-                    #         options=multi_class_options,
-                    #         value=multi_class_value
-                    #     ),
-                    # ], className='dropdown'
-                    # ),
-
-                    html.Button(
-                        id='model-trainer',
-                        children=['Train'],
-                        className="btn btn-info mt-2"
-                    ),
-
-                ],
-                    className='col-md-6'),
-                # graph
-                html.Div([
-                    html.Div([
-                        dcc.Graph(
-                            id='trained_model_graph',
-                        ),
-                    ], className="border"),
-                ],
-                    className='col-md-6'),
-            ], className='row'),
-
-            html.Hr(className="m-4"),
-
-            # lower half
-            html.Div([
-                html.Div(
-                    [
-                        html.H4('Model Analysis'),
-
-                        html.Div([], id='classification_score'),
-
-                    ], className='bg-light col-md-6'
-                ),
-                html.Div(
-                    [
-                        html.H4('Confusion Matrix'),
                         html.Div([
                             dcc.Graph(
-                                id='confusion_matrix',
-                            )
-                        ], className='heatmap')
-                    ], className='border col-md-6'
-                ),
-            ], className='row'),
-        ], id="playground"),
-    
-    # Blank Dummy Elements
-    html.Div([
-        dcc.RadioItems(
-            id=dynamic_id_dual,
-            options=[
-                {'label': 'True', 'value': 'True', 'disabled': True},
-                {'label': 'False', 'value': 'False', 'disabled': True},
-            ],
-            value='False'
-        ),
-        dcc.Dropdown(
-            id=dynamic_id_penalty_picker,
-            options=penalty_options,
-            value=penalty_value
-        ),
-        dcc.Slider(
-            id=dynamic_id_random_state_picker,
-            min=0,
-            max=10,
-            step=1,
-            value=0,
-            disabled=True,
-        ),
-        ], id='asd'),
+                                id='dataset_graph',
+                                # figure='fig'
+                            ),
+                        ], className="border bg-white"),
 
-    ],
-        className='container')
-])
+                    ], className='col-md-6'),
+
+                ], className='row'),
+
+                html.Hr(className="m-4"),
+
+                # upper half
+                html.Div([
+                    # tuners
+                    html.Div([
+                        html.H4('Tuners here'),
+
+                        # training size
+
+                        html.Div([
+
+                            html.H6([html.Span("Training Size:", title="Specify Training Size Of Model")]),
+
+                            dcc.Slider(
+                                id='training_size_picker',
+                                min=5,
+                                max=95,
+                                step=1,
+                                value=training_size,
+                                tooltip={'always_visible': False, 'placement': 'bottomLeft'},
+                                updatemode='drag',
+                                marks={
+                                    5: {'label': '5'},
+                                    10: {'label': '10'},
+                                    15: {'label': '15'},
+                                    20: {'label': '20'},
+                                    25: {'label': '25'},
+                                    30: {'label': '30'},
+                                    35: {'label': '35'},
+                                    40: {'label': '40'},
+                                    45: {'label': '45'},
+                                    50: {'label': '50'},
+                                    55: {'label': '55'},
+                                    60: {'label': '60'},
+                                    65: {'label': '65'},
+                                    70: {'label': '70'},
+                                    75: {'label': '75'},
+                                    80: {'label': '80'},
+                                    85: {'label': '85'},
+                                    90: {'label': '90'},
+                                    95: {'label': '95'},
+                                }
+                            ),
+                        ], className='border bg-white p-2'),
+
+                        # solver
+                        html.Div([
+                            html.H6([html.Span("Solver parameter:", title="Algorithm to use in the optimization problem.")], className="hyperparameter-title"),
+                            dcc.Dropdown(
+                                id='solver_picker',
+                                options=solver_options,
+                                value=solver_value
+                            ),
+                        ], className='border bg-white p-2 mt-2'
+                        ),
+
+        
+
+                        # dual
+                        html.Div([
+                            html.H6([html.Span("Dual parameter:", title="Dual or primal formulation. Dual formulation is only implemented for l2 penalty with liblinear solver. Prefer dual=False when n_samples > n_features.")], className="hyperparameter-title"),
+
+                            html.Div([], id='dual_picker_div')
+                            # dcc.RadioItems(
+                            #     id='dual_picker',
+                            #     options=[
+                            #         {'label': 'True', 'value': 'True'},
+                            #         {'label': 'False', 'value': 'False'},
+                            #     ],
+                            #     value='False'
+                            # ),
+                        ], className="border bg-white p-2 mt-2", id='dual-div'),
+                        # if dual_show else html.H1('Dual here', id='dual_picker', ),
+
+                        # C parameter
+                        html.Div([
+                            html.H6([html.Span("C parameter:", title="Inverse of regularization strength; must be a positive float. Like in support vector machines, smaller values specify stronger regularization.")], className="hyperparameter-title"),
+                            dcc.Slider(
+                                id='c_picker',
+                                min=0,
+                                max=5,
+                                step=0.1,
+                                value=1.0,
+                                tooltip={'always_visible': False, 'placement': 'bottomLeft'},
+                                updatemode='drag',
+                                marks={
+                                    0: {'label': '0'},
+                                    1: {'label': '1'},
+                                    2: {'label': '2'},
+                                    3: {'label': '3'},
+                                    4: {'label': '4'},
+                                    5: {'label': '5'},
+                                }
+                            ),
+                        ], className='border bg-white p-2 mt-2'
+                        ),
+
+                        # fit_intercept
+                        html.Div([
+                            html.H6([html.Span("Fit intercept:", title="Specifies if a constant (a.k.a. bias or intercept) should be added to the decision function.")], className="hyperparameter-title"),
+                            dcc.RadioItems(
+                                id='fit_intercept_picker',
+                                options=[
+                                    {'label': 'True', 'value': 'True'},
+                                    {'label': 'False', 'value': 'False'},
+                                ],
+                                value='True'
+                            ),
+                        ], className="border bg-white p-2 mt-2"),
+
+                        # penalty
+                        html.Div([
+                            html.H6([
+                                html.Span("Penalty parameter:", title="Used to specify the norm used in the penalization. The ‘newton-cg’, ‘sag’ and ‘lbfgs’ solvers support only l2 penalties. ‘elasticnet’ is only supported by the ‘saga’ solver. If ‘none’ (not supported by the liblinear solver), no regularization is applied.")], className="hyperparameter-title"),
+
+                            html.Div([
+                            ],
+                                id='penalty_picker_div', ),
+                            # dcc.Dropdown(
+                            #     id='penalty_picker',
+                            #     options=penalty_options,
+                            #     value=penalty_value
+                            # ),
+                        ], className='border bg-white p-2 mt-2'
+                        ),
+
+
+                        # random_state parameter
+                        html.Div([
+                            html.H6([html.Span("Random State", title="Whenever randomization is part of a Scikit-learn algorithm, a random_state parameter may be provided to control the random number generator used. Note that the mere presence of random_state doesn’t mean that randomization is always used, as it may be dependent on another parameter, e.g. shuffle, being set.")], className="hyperparameter-title"),
+                            html.Div([
+                                # retrun updated random state picker here
+                            ], id='random_state_div',
+                            ),
+                        ], className='border bg-white p-2 mt-2'
+                        ),
+
+
+                        # max_iter
+                        html.Div([
+                            html.H6([html.Span("Max Iter:", title="Maximum number of iterations taken for the solvers to converge.")], className="hyperparameter-title"),
+                            dcc.Slider(
+                                id='max_iter_picker',
+                                min=1,
+                                max=300,
+                                step=1,
+                                value=100,
+                                marks={
+                                    1: {'label': '1'},
+                                    50: {'label': '50'},
+                                    100: {'label': '100'},
+                                    150: {'label': '150'},
+                                    200: {'label': '200'},
+                                    250: {'label': '250'},
+                                    300: {'label': '300'}
+                                }
+                            ),
+                        ], className='border bg-white p-2 mt-2'
+                        ),
+
+                        # multi_class
+                        # html.Div([
+                        #     html.P("multi class parameter", className="hyperparameter-title"),
+                        #     dcc.Dropdown(
+                        #         id='multi_class_picker',
+                        #         options=multi_class_options,
+                        #         value=multi_class_value
+                        #     ),
+                        # ], className='dropdown'
+                        # ),
+
+                        html.Button(
+                            id='model-trainer',
+                            children=['Train'],
+                            className="btn btn-info mt-2"
+                        ),
+
+                    ],
+                        className='col-md-6'),
+                    # graph
+                    html.Div([
+                        html.Div([
+                            dcc.Graph(
+                                id='trained_model_graph',
+                            ),
+                        ], className="border"),
+                    ],
+                        className='col-md-6'),
+                ], className='row'),
+
+                html.Hr(className="m-4"),
+
+                # lower half
+                html.Div([
+                    html.Div(
+                        [
+                            html.H4('Model Analysis'),
+
+                            html.Div([], id='classification_score'),
+
+                        ], className='bg-white col-md-6'
+                    ),
+                    html.Div(
+                        [
+                            # html.H4('Confusion Matrix'),
+                            html.Div([
+                                dcc.Graph(
+                                    id='confusion_matrix',
+                                )
+                            ], className='heatmap')
+                        ], className='border col-md-6'
+                    ),
+                ], className='row'),
+            ], id="playground"),
+        
+        # Blank Dummy Elements
+        html.Div([
+            dcc.RadioItems(
+                id=dynamic_id_dual,
+                options=[
+                    {'label': 'True', 'value': 'True', 'disabled': True},
+                    {'label': 'False', 'value': 'False', 'disabled': True},
+                ],
+                value='False'
+            ),
+            dcc.Dropdown(
+                id=dynamic_id_penalty_picker,
+                options=penalty_options,
+                value=penalty_value
+            ),
+            dcc.Slider(
+                id=dynamic_id_random_state_picker,
+                min=0,
+                max=10,
+                step=1,
+                value=0,
+                disabled=True,
+            ),
+            ], id='asd'),
+
+        ], className='container'),
+    
+    html.Hr(),
+
+    html.Footer([
+        html.Ul([
+            html.Li([
+                html.Img(src="https://media-exp1.licdn.com/dms/image/C5603AQE3sJPOwySKcw/profile-displayphoto-shrink_200_200/0?e=1604534400&v=beta&t=Gv1lV4ySoWMIQdqfPSparPZRjq-RHeNp40d6fvqw3ro", className="img rounded-50"),
+                html.A("Link", href="wwww.google.com"),
+            ]),
+        ])
+    ], className="bg-white m-5")
+
+
+    ],)
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
@@ -823,10 +864,17 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
 
     traces = []
     for i in range(0, n_classes):
-        x = data[data['Labels'] == i]
-        traces.append(go.Scatter(x=x[0], y=x[1], mode='markers', name='class ' + str(i)))
+        bool_cond = y_train == i
+        bool_cond_2 = prediction_test == i
+        print(x_train[bool_cond])
+        color = "red"
+        if(i == 1):
+            color="purple"
 
-    traces.append(go.Scatter(x=data[0], y=y, mode='lines'))
+        traces.append(go.Scatter(x=x_train[bool_cond][0], y=x_train[bool_cond][1], mode='markers', name='class ' + str(i)+ ' training data', marker_symbol='triangle-up', marker_color=color))
+        traces.append(go.Scatter(x=x_test[bool_cond_2][0], y=x_test[bool_cond_2][1], mode='markers', name='class ' + str(i)+ ' test data', marker_color=color))
+
+    traces.append(go.Scatter(x=data[0], y=y, mode='lines', name="Regression Line"))
 
     # confusion martix generation
 
@@ -897,7 +945,7 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
         "x": ["Predicted 0's", "Predicted 1's"],
         "y": ["Actual 0's", "Actual 1's"],
         "z": matrix
-    }])
+    }], layout={"title":"Confusion Matrix"})
 
 
 def set_dependencies():
