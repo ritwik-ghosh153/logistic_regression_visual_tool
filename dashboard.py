@@ -520,45 +520,48 @@ layout_main = html.Div([
     html.Hr(),
 
     html.Footer([
-        html.H4([html.A("Github Repository", href="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/")]),
-        html.H4("Contributors:"),
-        html.Ul([
-            html.Li([
+        html.H6(
+            [html.A("Github Repository", href="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/")]),
+        html.H6("Contributors:"),
+        html.Div([
+            html.Div([
                 html.Img(
                     src="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/blob/develop/profile_photos/ritik.png?raw=true",
-                    className="rounded-circle", style={"width":"40px", "height":"40px"}),
+                    className="rounded-circle", style={"width": "40px", "height": "40px"}),
                 html.A("Ritik Verma", href="https://www.linkedin.com/in/ritik-v-100516a5/", className="ml-2"),
-            ]),
+            ], className="col-md-6 mt-2"),
 
-            html.Li([
+            html.Div([
                 html.Img(
                     src="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/blob/develop/profile_photos/ritwik.jpg?raw=true",
-                    className="rounded-circle", style={"width":"40px", "height":"40px"}),
+                    className="rounded-circle", style={"width": "40px", "height": "40px"}),
                 html.A("Ritwik Ghosh", href="https://www.linkedin.com/in/ritwik-ghosh-01ba01152/", className="ml-2"),
-            ], className="mt-2"),
+            ], className="col-md-6 mt-2"),
 
-            html.Li([
+            html.Div([
                 html.Img(
                     src="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/blob/develop/profile_photos/priscila.jpeg?raw=true",
-                    className="rounded-circle", style={"width":"40px", "height":"40px"}),
-                html.A("Priscila Tamang Ghising", href="https://www.linkedin.com/in/priscila-tamang-ghising-a703b1174/", className="ml-2"),
-            ], className="mt-2"),
+                    className="rounded-circle", style={"width": "40px", "height": "40px"}),
+                html.A("Priscila Tamang Ghising", href="https://www.linkedin.com/in/priscila-tamang-ghising-a703b1174/",
+                       className="ml-2"),
+            ], className="col-md-6 mt-2"),
 
-            html.Li([
+            html.Div([
                 html.Img(
                     src="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/blob/develop/profile_photos/gazal.jpeg?raw=true",
-                    className="rounded-circle", style={"width":"40px", "height":"40px"}),
+                    className="rounded-circle", style={"width": "40px", "height": "40px"}),
                 html.A("Gazal Garg", href="https://www.linkedin.com/in/gazal-garg-073a2719b/", className="ml-2"),
-            ], className="mt-2"),
+            ], className="col-md-6 mt-2"),
 
-            html.Li([
+            html.Div([
                 html.Img(
                     src="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/blob/develop/profile_photos/mushreqa.jpeg?raw=true",
-                    className="rounded-circle", style={"width":"40px", "height":"40px"}),
-                html.A("Mushrequa Nawaz", href="https://www.linkedin.com/in/mushrequa-nawaz-a3b1881a0/", className="ml-2"),
-            ], className="mt-2"),
-        ])
-    ], className="bg-white m-5")
+                    className="rounded-circle", style={"width": "40px", "height": "40px"}),
+                html.A("Mushrequa Nawaz", href="https://www.linkedin.com/in/mushrequa-nawaz-a3b1881a0/",
+                       className="ml-2"),
+            ], className="col-md-6 mt-2"),
+        ], className='row')
+    ], className="container border bg-light m-5")
 
 ], )
 
@@ -860,10 +863,10 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
     global max_iter_value
     global training_size
 
-    print("solver_value=", solver_value)
-    print("solver=", solver)
+    # print("solver_value=", solver_value)
+    # print("solver=", solver)
     solver_value = solver
-    print('value update')
+    # print('value update')
     penalty_value = penalty
     dual_value = dual
     fit_intercept_value = fit_intercept
@@ -886,9 +889,9 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
                                                         test_size=(100 - training_size) / 100)
 
     model = LogisticRegression(penalty=penalty_value,
-                               # dual=eval(dual_value),
+                               dual=True if dual_value == 'True' else False,
                                C=c_value,
-                               # fit_intercept=fit_intercept_value,
+                               fit_intercept=True if fit_intercept_value == 'True' else False,
                                random_state=random_state_value, solver=solver_value, max_iter=max_iter_value,
                                # multi_class='auto',
                                warm_start=False, n_jobs=-1 if solver_value != 'liblinear' else None, )
@@ -905,7 +908,7 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
     for i in range(0, n_classes):
         bool_cond = y_train == i
         bool_cond_2 = prediction_test == i
-        print(x_train[bool_cond])
+        # print(x_train[bool_cond])
         color = "red"
         if (i == 1):
             color = "purple"
@@ -1070,7 +1073,7 @@ def set_dependencies():
     # random state
     if solver_value == 'sag' or solver_value == 'saga' or solver_value == 'lbfgs':
         random_state_show = True
-        print('changing status')
+        # print('changing status')
     else:
         random_state_show = False
         random_state_value = 0
@@ -1105,7 +1108,7 @@ def set_dependencies():
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
 def display_page(pathname):
-    print(pathname)
+    # print(pathname)
     if pathname == '/':
         return layout_main
     elif pathname == '/tour':

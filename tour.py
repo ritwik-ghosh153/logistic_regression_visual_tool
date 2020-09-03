@@ -78,7 +78,7 @@ sample_lines = []
 count = 0
 count_2 = 0
 for i, result in zip(lines, report):
-    print(count)
+    # print(count)
     count = count + 1
     if count == 1:
         layout = go.Layout(
@@ -291,43 +291,46 @@ layout_tour = html.Div([
     ], className='container mt-2'),
 
     html.Footer([
-        html.H4([html.A("Github Repository", href="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/")]),
-        html.H4("Contributors:"),
-        html.Ul([
-            html.Li([
+        html.H6(
+            [html.A("Github Repository", href="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/")]),
+        html.H6("Contributors:"),
+        html.Div([
+            html.Div([
                 html.Img(
                     src="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/blob/develop/profile_photos/ritik.png?raw=true",
-                    className="rounded-circle", style={"width":"40px", "height":"40px"}),
+                    className="rounded-circle", style={"width": "40px", "height": "40px"}),
                 html.A("Ritik Verma", href="https://www.linkedin.com/in/ritik-v-100516a5/", className="ml-2"),
-            ]),
+            ], className="col-md-6 mt-2"),
 
-            html.Li([
+            html.Div([
                 html.Img(
                     src="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/blob/develop/profile_photos/ritwik.jpg?raw=true",
-                    className="rounded-circle", style={"width":"40px", "height":"40px"}),
+                    className="rounded-circle", style={"width": "40px", "height": "40px"}),
                 html.A("Ritwik Ghosh", href="https://www.linkedin.com/in/ritwik-ghosh-01ba01152/", className="ml-2"),
-            ], className="mt-2"),
+            ], className="col-md-6 mt-2"),
 
-            html.Li([
+            html.Div([
                 html.Img(
                     src="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/blob/develop/profile_photos/priscila.jpeg?raw=true",
-                    className="rounded-circle", style={"width":"40px", "height":"40px"}),
-                html.A("Priscila Tamang Ghising", href="https://www.linkedin.com/in/priscila-tamang-ghising-a703b1174/", className="ml-2"),
-            ], className="mt-2"),
+                    className="rounded-circle", style={"width": "40px", "height": "40px"}),
+                html.A("Priscila Tamang Ghising", href="https://www.linkedin.com/in/priscila-tamang-ghising-a703b1174/",
+                       className="ml-2"),
+            ], className="col-md-6 mt-2"),
 
-            html.Li([
+            html.Div([
                 html.Img(
                     src="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/blob/develop/profile_photos/gazal.jpeg?raw=true",
-                    className="rounded-circle", style={"width":"40px", "height":"40px"}),
+                    className="rounded-circle", style={"width": "40px", "height": "40px"}),
                 html.A("Gazal Garg", href="https://www.linkedin.com/in/gazal-garg-073a2719b/", className="ml-2"),
-            ], className="mt-2"),
+            ], className="col-md-6 mt-2"),
 
-            html.Li([
+            html.Div([
                 html.Img(
                     src="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/blob/develop/profile_photos/mushreqa.jpeg?raw=true",
-                    className="rounded-circle", style={"width":"40px", "height":"40px"}),
-                html.A("Mushrequa Nawaz", href="https://www.linkedin.com/in/mushrequa-nawaz-a3b1881a0/", className="ml-2"),
-            ], className="mt-2"),
-        ])
-    ], className="bg-white m-5")
+                    className="rounded-circle", style={"width": "40px", "height": "40px"}),
+                html.A("Mushrequa Nawaz", href="https://www.linkedin.com/in/mushrequa-nawaz-a3b1881a0/",
+                       className="ml-2"),
+            ], className="col-md-6 mt-2"),
+        ], className='row')
+    ], className="container border bg-light m-5")
 ])
