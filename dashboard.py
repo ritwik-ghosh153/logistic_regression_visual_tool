@@ -513,7 +513,7 @@ layout_main = html.Div([
     html.Footer([
         html.Ul([
             html.Li([
-                html.Img(src="https://media-exp1.licdn.com/dms/image/C5603AQE3sJPOwySKcw/profile-displayphoto-shrink_200_200/0?e=1604534400&v=beta&t=Gv1lV4ySoWMIQdqfPSparPZRjq-RHeNp40d6fvqw3ro", className="img rounded-50"),
+                html.Img(src="https://media-exp1.licdn.com/dms/image/C5603AQE3sJPOwySKcw/profile-displayphoto-shrink_200_200/0?e=1604534400&v=beta&t=Gv1lV4ySoWMIQdqfPSparPZRjq-RHeNp40d6fvqw3ro", className="rounded-circle"),
                 html.A("Link", href="wwww.google.com"),
             ]),
         ])
