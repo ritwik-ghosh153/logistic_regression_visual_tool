@@ -43,7 +43,6 @@ external_scripts = [
     }
 ]
 
-
 # external CSS stylesheets
 external_stylesheets = [
     {
@@ -85,8 +84,6 @@ app.index_string = '''
     </body>
 </html>
 '''
-
-
 
 # setting initial values
 
@@ -175,7 +172,6 @@ layout_main = html.Div([
     html.Div(children=
     [
 
-
         html.H1('Logistic Regression Visual Tool', className="text-center"),
         html.Hr([]),
         # main playground
@@ -217,7 +213,8 @@ layout_main = html.Div([
                         # samples parameter
                         html.Div([
                             html.H6([
-                                html.Span("Number of samples in data:", title="Used to generate dataset of given number of rows")
+                                html.Span("Number of samples in data:",
+                                          title="Used to generate dataset of given number of rows")
                             ], className="hyperparameter-title"),
                             dcc.Slider(
                                 id='samples_picker',
@@ -250,7 +247,9 @@ layout_main = html.Div([
                             className="btn btn-info m-3"
                         ),
 
-                        html.P("The data generated on the click of this button is random, yet follows a pattern to allow for proper classification by forming two major clusters (the two classes of the data). Since logistic regression classier works best of two-class classifications, we shall work with two classes. The graph offers a visualisation of the data, how it is clustered and its spread on the 2D plain. Next, we shall see how tweaking the various hyperparameters, as offered by the sklearn.linear_model.LogisticRegression library of the data, allows us to fine tune our classifier model and how that affects the resulting accuracy.", className="m-2"),
+                        html.P(
+                            "The data generated on the click of this button is random, yet follows a pattern to allow for proper classification by forming two major clusters (the two classes of the data). Since logistic regression classier works best of two-class classifications, we shall work with two classes. The graph offers a visualisation of the data, how it is clustered and its spread on the 2D plain. Next, we shall see how tweaking the various hyperparameters, as offered by the sklearn.linear_model.LogisticRegression library of the data, allows us to fine tune our classifier model and how that affects the resulting accuracy.",
+                            className="m-2"),
                     ], className='col-md-6'),
                     # data graph
                     html.Div([
@@ -313,7 +312,9 @@ layout_main = html.Div([
 
                         # solver
                         html.Div([
-                            html.H6([html.Span("Solver parameter:", title="Algorithm to use in the optimization problem.")], className="hyperparameter-title"),
+                            html.H6(
+                                [html.Span("Solver parameter:", title="Algorithm to use in the optimization problem.")],
+                                className="hyperparameter-title"),
                             dcc.Dropdown(
                                 id='solver_picker',
                                 options=solver_options,
@@ -322,11 +323,11 @@ layout_main = html.Div([
                         ], className='border bg-white p-2 mt-2'
                         ),
 
-        
-
                         # dual
                         html.Div([
-                            html.H6([html.Span("Dual parameter:", title="Dual or primal formulation. Dual formulation is only implemented for l2 penalty with liblinear solver. Prefer dual=False when n_samples > n_features.")], className="hyperparameter-title"),
+                            html.H6([html.Span("Dual parameter:",
+                                               title="Dual or primal formulation. Dual formulation is only implemented for l2 penalty with liblinear solver. Prefer dual=False when n_samples > n_features.")],
+                                    className="hyperparameter-title"),
 
                             html.Div([], id='dual_picker_div')
                             # dcc.RadioItems(
@@ -342,7 +343,9 @@ layout_main = html.Div([
 
                         # C parameter
                         html.Div([
-                            html.H6([html.Span("C parameter:", title="Inverse of regularization strength; must be a positive float. Like in support vector machines, smaller values specify stronger regularization.")], className="hyperparameter-title"),
+                            html.H6([html.Span("C parameter:",
+                                               title="Inverse of regularization strength; must be a positive float. Like in support vector machines, smaller values specify stronger regularization.")],
+                                    className="hyperparameter-title"),
                             dcc.Slider(
                                 id='c_picker',
                                 min=0,
@@ -365,7 +368,9 @@ layout_main = html.Div([
 
                         # fit_intercept
                         html.Div([
-                            html.H6([html.Span("Fit intercept:", title="Specifies if a constant (a.k.a. bias or intercept) should be added to the decision function.")], className="hyperparameter-title"),
+                            html.H6([html.Span("Fit intercept:",
+                                               title="Specifies if a constant (a.k.a. bias or intercept) should be added to the decision function.")],
+                                    className="hyperparameter-title"),
                             dcc.RadioItems(
                                 id='fit_intercept_picker',
                                 options=[
@@ -379,7 +384,9 @@ layout_main = html.Div([
                         # penalty
                         html.Div([
                             html.H6([
-                                html.Span("Penalty parameter:", title="Used to specify the norm used in the penalization. The ‘newton-cg’, ‘sag’ and ‘lbfgs’ solvers support only l2 penalties. ‘elasticnet’ is only supported by the ‘saga’ solver. If ‘none’ (not supported by the liblinear solver), no regularization is applied.")], className="hyperparameter-title"),
+                                html.Span("Penalty parameter:",
+                                          title="Used to specify the norm used in the penalization. The ‘newton-cg’, ‘sag’ and ‘lbfgs’ solvers support only l2 penalties. ‘elasticnet’ is only supported by the ‘saga’ solver. If ‘none’ (not supported by the liblinear solver), no regularization is applied.")],
+                                className="hyperparameter-title"),
 
                             html.Div([
                             ],
@@ -392,10 +399,11 @@ layout_main = html.Div([
                         ], className='border bg-white p-2 mt-2'
                         ),
 
-
                         # random_state parameter
                         html.Div([
-                            html.H6([html.Span("Random State", title="Whenever randomization is part of a Scikit-learn algorithm, a random_state parameter may be provided to control the random number generator used. Note that the mere presence of random_state doesn’t mean that randomization is always used, as it may be dependent on another parameter, e.g. shuffle, being set.")], className="hyperparameter-title"),
+                            html.H6([html.Span("Random State",
+                                               title="Whenever randomization is part of a Scikit-learn algorithm, a random_state parameter may be provided to control the random number generator used. Note that the mere presence of random_state doesn’t mean that randomization is always used, as it may be dependent on another parameter, e.g. shuffle, being set.")],
+                                    className="hyperparameter-title"),
                             html.Div([
                                 # retrun updated random state picker here
                             ], id='random_state_div',
@@ -403,10 +411,11 @@ layout_main = html.Div([
                         ], className='border bg-white p-2 mt-2'
                         ),
 
-
                         # max_iter
                         html.Div([
-                            html.H6([html.Span("Max Iter:", title="Maximum number of iterations taken for the solvers to converge.")], className="hyperparameter-title"),
+                            html.H6([html.Span("Max Iter:",
+                                               title="Maximum number of iterations taken for the solvers to converge.")],
+                                    className="hyperparameter-title"),
                             dcc.Slider(
                                 id='max_iter_picker',
                                 min=1,
@@ -480,7 +489,7 @@ layout_main = html.Div([
                     ),
                 ], className='row'),
             ], id="playground"),
-        
+
         # Blank Dummy Elements
         html.Div([
             dcc.RadioItems(
@@ -504,30 +513,30 @@ layout_main = html.Div([
                 value=0,
                 disabled=True,
             ),
-            ], id='asd'),
+        ], id='asd'),
 
-        ], className='container'),
-    
+    ], className='container'),
+
     html.Hr(),
 
     html.Footer([
         html.Ul([
             html.Li([
-                html.Img(src="https://media-exp1.licdn.com/dms/image/C5603AQE3sJPOwySKcw/profile-displayphoto-shrink_200_200/0?e=1604534400&v=beta&t=Gv1lV4ySoWMIQdqfPSparPZRjq-RHeNp40d6fvqw3ro", className="rounded-circle"),
+                html.Img(
+                    src="https://media-exp1.licdn.com/dms/image/C5603AQE3sJPOwySKcw/profile-displayphoto-shrink_200_200/0?e=1604534400&v=beta&t=Gv1lV4ySoWMIQdqfPSparPZRjq-RHeNp40d6fvqw3ro",
+                    className="rounded-circle"),
                 html.A("Link", href="wwww.google.com"),
             ]),
         ])
     ], className="bg-white m-5")
 
-
-    ],)
+], )
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Div([layout_main
-        ],id='page-content')
+              ], id='page-content')
 ])
-
 
 
 # functions
@@ -868,11 +877,14 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
         bool_cond_2 = prediction_test == i
         print(x_train[bool_cond])
         color = "red"
-        if(i == 1):
-            color="purple"
+        if (i == 1):
+            color = "purple"
 
-        traces.append(go.Scatter(x=x_train[bool_cond][0], y=x_train[bool_cond][1], mode='markers', name='class ' + str(i)+ ' training data', marker_symbol='triangle-up', marker_color=color))
-        traces.append(go.Scatter(x=x_test[bool_cond_2][0], y=x_test[bool_cond_2][1], mode='markers', name='class ' + str(i)+ ' test data', marker_color=color))
+        traces.append(go.Scatter(x=x_train[bool_cond][0], y=x_train[bool_cond][1], mode='markers',
+                                 name='class ' + str(i) + ' training data', marker_symbol='triangle-up',
+                                 marker_color=color))
+        traces.append(go.Scatter(x=x_test[bool_cond_2][0], y=x_test[bool_cond_2][1], mode='markers',
+                                 name='class ' + str(i) + ' test data', marker_color=color))
 
     traces.append(go.Scatter(x=data[0], y=y, mode='lines', name="Regression Line"))
 
@@ -945,7 +957,7 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
         "x": ["Predicted 0's", "Predicted 1's"],
         "y": ["Actual 0's", "Actual 1's"],
         "z": matrix
-    }], layout={"title":"Confusion Matrix"})
+    }], layout={"title": "Confusion Matrix"})
 
 
 def set_dependencies():
@@ -1058,20 +1070,22 @@ def set_dependencies():
             },
         ]
 
+
 # seq_count = 0
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
 def display_page(pathname):
     print(pathname)
     if pathname == '/':
-         return layout_main
+        return layout_main
     elif pathname == '/tour':
-         # if(sqe_count == 0):
-         #     tour.generate_sequence()
-         #     seq_count = seq_count + 1
-         return tour.layout_tour
+        # if(sqe_count == 0):
+        #     tour.generate_sequence()
+        #     seq_count = seq_count + 1
+        return tour.layout_tour
     else:
         return '404'
+
 
 if __name__ == "__main__":
     app.run_server(port=3000, debug=True,
