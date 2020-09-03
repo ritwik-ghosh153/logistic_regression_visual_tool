@@ -1,12 +1,9 @@
-body {
-
-	background-color: #f0f7f8;
-}
 #asd {
 	display: none;
 }
 
-h1, h4 {
+h1, h2, h3, h4, h5, h6 {
 	text-decoration: underline;
 }
+
 

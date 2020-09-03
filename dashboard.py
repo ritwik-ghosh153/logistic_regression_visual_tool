@@ -54,7 +54,7 @@ external_stylesheets = [
     }
 ]
 
-pio.templates.default = "plotly_dark"
+# pio.templates.default = "plotly_dark"
 
 app = dash.Dash(__name__, external_scripts=external_scripts, external_stylesheets=external_stylesheets
                 # meta_tags=[
@@ -141,15 +141,19 @@ dynamic_id_dual = 'dual_picker'
 dynamic_id_penalty_picker = 'penalty_picker'
 dynamic_id_random_state_picker = 'random_state_picker'
 
-layout_main = html.Div(children=
-[
+layout_main = html.Div([
+
+    # NAV BAR
     html.Nav([
-        html.A("Playground", className="flex-sm-fill text-sm-center nav-link active", href="/"),
-        html.A("Tour", className="flex-sm-fill text-sm-center nav-link", href="/tour")
-    ], className="nav nav-pills flex-column flex-sm-row"),
+        html.A("Playground", className="flex-sm-fill text-sm-center nav-link bg-info text-white", href="/"),
+        html.A("Tour", className="flex-sm-fill text-sm-center nav-link text-white", href="/tour")
+    ], className="nav nav-pills flex-column flex-sm-row bg-dark"),
+
+    html.Div(children=
+[
 
 
-    html.H1('Logistic Regression Visual Tool', className="text-center pt-5"),
+    html.H1('Logistic Regression Visual Tool', className="text-center"),
     html.Hr([]),
     # main playground
     html.Div(
@@ -189,7 +193,9 @@ layout_main = html.Div(children=
 
                     # samples parameter
                     html.Div([
-                        html.H6("Number of samples in data:", className="hyperparameter-title"),
+                        html.H6([
+                            html.Span("Number of samples in data:", title="Used to generate dataset of given number of rows")
+                        ], className="hyperparameter-title"),
                         dcc.Slider(
                             id='samples_picker',
                             min=10,
@@ -212,8 +218,7 @@ layout_main = html.Div(children=
                                 1000: {'label': '1000'},
                             }
                         ),
-                    ], className='slider'
-                    ),
+                    ], className='border slider bg-light p-2'),
 
                     # data generation button
                     html.Button(
@@ -229,23 +234,26 @@ layout_main = html.Div(children=
                             id='dataset_graph',
                             # figure='fig'
                         ),
-                    ], className="border"),
+                    ], className="border bg-light"),
 
                 ], className='col-md-6'),
 
             ], className='row'),
 
-            html.Hr(className="m-2"),
+            html.Hr(className="m-4"),
 
             # upper half
             html.Div([
                 # tuners
                 html.Div([
-                    html.H3('Tuners here'),
+                    html.H4('Tuners here'),
 
                     # training size
 
                     html.Div([
+
+                        html.H6([html.Span("Training Size:", title="Specify Training Size Of Model")]),
+
                         dcc.Slider(
                             id='training_size_picker',
                             min=5,
@@ -276,11 +284,12 @@ layout_main = html.Div(children=
                                 95: {'label': '95'},
                             }
                         ),
-                    ], className='slider'),
+                    ], className='border bg-light p-2'),
 
                     # penalty
                     html.Div([
-                        html.H6("Penalty parameter", className="hyperparameter-title"),
+                        html.H6([
+                            html.Span("Penalty parameter:", title="Used to specify the norm used in the penalization. The ‘newton-cg’, ‘sag’ and ‘lbfgs’ solvers support only l2 penalties. ‘elasticnet’ is only supported by the ‘saga’ solver. If ‘none’ (not supported by the liblinear solver), no regularization is applied.")], className="hyperparameter-title"),
 
                         html.Div([
                         ],
@@ -290,12 +299,12 @@ layout_main = html.Div(children=
                         #     options=penalty_options,
                         #     value=penalty_value
                         # ),
-                    ], className='dropdown'
+                    ], className='border bg-light p-2 mt-2'
                     ),
 
                     # dual
                     html.Div([
-                        html.P("Dual parameter", className="hyperparameter-title"),
+                        html.H6([html.Span("Dual parameter:", title="Dual or primal formulation. Dual formulation is only implemented for l2 penalty with liblinear solver. Prefer dual=False when n_samples > n_features.")], className="hyperparameter-title"),
 
                         html.Div([], id='dual_picker_div')
                         # dcc.RadioItems(
@@ -306,12 +315,12 @@ layout_main = html.Div(children=
                         #     ],
                         #     value='False'
                         # ),
-                    ], className="radio", id='dual-div'),
+                    ], className="border bg-light p-2 mt-2", id='dual-div'),
                     # if dual_show else html.H1('Dual here', id='dual_picker', ),
 
                     # C parameter
                     html.Div([
-                        html.P("C parameter", className="hyperparameter-title"),
+                        html.H6([html.Span("C parameter:", title="Inverse of regularization strength; must be a positive float. Like in support vector machines, smaller values specify stronger regularization.")], className="hyperparameter-title"),
                         dcc.Slider(
                             id='c_picker',
                             min=0,
@@ -329,12 +338,12 @@ layout_main = html.Div(children=
                                 5: {'label': '5'},
                             }
                         ),
-                    ], className='slider'
+                    ], className='border bg-light p-2 mt-2'
                     ),
 
                     # fit_intercept
                     html.Div([
-                        html.P("Fit intercept", className="hyperparameter-title"),
+                        html.H6([html.Span("Fit intercept:", title="Specifies if a constant (a.k.a. bias or intercept) should be added to the decision function.")], className="hyperparameter-title"),
                         dcc.RadioItems(
                             id='fit_intercept_picker',
                             options=[
@@ -343,32 +352,32 @@ layout_main = html.Div(children=
                             ],
                             value='True'
                         ),
-                    ], className="radio"),
+                    ], className="border bg-light p-2 mt-2"),
 
                     # random_state parameter
                     html.Div([
-                        html.P("random_state", className="hyperparameter-title"),
+                        html.H6([html.Span("Random State", title="Whenever randomization is part of a Scikit-learn algorithm, a random_state parameter may be provided to control the random number generator used. Note that the mere presence of random_state doesn’t mean that randomization is always used, as it may be dependent on another parameter, e.g. shuffle, being set.")], className="hyperparameter-title"),
                         html.Div([
                             # retrun updated random state picker here
                         ], id='random_state_div',
                         ),
-                    ], className='slider'
+                    ], className='border bg-light p-2 mt-2'
                     ),
 
                     # solver
                     html.Div([
-                        html.P("Solver parameter", className="hyperparameter-title"),
+                        html.H6([html.Span("Solver parameter:", title="Algorithm to use in the optimization problem.")], className="hyperparameter-title"),
                         dcc.Dropdown(
                             id='solver_picker',
                             options=solver_options,
                             value=solver_value
                         ),
-                    ], className='dropdown'
+                    ], className='border bg-light p-2 mt-2'
                     ),
 
                     # max_iter
                     html.Div([
-                        html.P("Max Iter parameter", className="hyperparameter-title"),
+                        html.H6([html.Span("Max Iter:", title="Maximum number of iterations taken for the solvers to converge.")], className="hyperparameter-title"),
                         dcc.Slider(
                             id='max_iter_picker',
                             min=1,
@@ -385,7 +394,7 @@ layout_main = html.Div(children=
                                 300: {'label': '300'}
                             }
                         ),
-                    ], className='slider'
+                    ], className='border bg-light p-2 mt-2'
                     ),
 
                     # multi_class
@@ -402,14 +411,13 @@ layout_main = html.Div(children=
                     html.Button(
                         id='model-trainer',
                         children=['Train'],
-                        className="btn btn-info"
+                        className="btn btn-info mt-2"
                     ),
 
                 ],
                     className='col-md-6'),
                 # graph
                 html.Div([
-                    html.H1('Graph here'),
                     html.Div([
                         dcc.Graph(
                             id='trained_model_graph',
@@ -419,25 +427,27 @@ layout_main = html.Div(children=
                     className='col-md-6'),
             ], className='row'),
 
+            html.Hr(className="m-4"),
+
             # lower half
             html.Div([
                 html.Div(
                     [
-                        html.H1('Data info here'),
+                        html.H4('Model Analysis'),
 
                         html.Div([], id='classification_score'),
 
-                    ], className='col-md-6'
+                    ], className='bg-light col-md-6'
                 ),
                 html.Div(
                     [
-                        html.H1('Results here'),
+                        html.H4('Confusion Matrix'),
                         html.Div([
                             dcc.Graph(
                                 id='confusion_matrix',
                             )
                         ], className='heatmap')
-                    ], className='col-md-6'
+                    ], className='border col-md-6'
                 ),
             ], className='row'),
         ], id="playground"),
@@ -465,11 +475,11 @@ layout_main = html.Div(children=
             value=0,
             disabled=True,
         ),
-    ], id='asd'),
+        ], id='asd'),
 
-],
-    className='container')
-
+    ],
+        className='container')
+])
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
