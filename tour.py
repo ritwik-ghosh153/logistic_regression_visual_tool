@@ -12,50 +12,6 @@ import sklearn.datasets as d
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-
-external_scripts = [
-    {
-        'src': 'https://use.fontawesome.com/releases/v5.0.13/js/solid.js',
-        'integrity': 'sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ',
-        'crossorigin': 'anonymous'
-    },
-    {
-        'src': 'https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js',
-        'integrity': 'sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY',
-        'crossorigin': 'anonymous'
-    },
-    {
-        'src': 'https://code.jquery.com/jquery-3.3.1.slim.min.js',
-        'integrity': 'sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo',
-        'crossorigin': 'anonymous'
-    },
-    {
-        'src': 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js',
-        'integrity': 'sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ',
-        'crossorigin': 'anonymous'
-    },
-    {
-        'src': 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js',
-        'integrity': 'sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm',
-        'crossorigin': 'anonymous'
-    }
-]
-
-
-# external CSS stylesheets
-external_stylesheets = [
-    {
-        'href': 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css',
-        'rel': 'stylesheet',
-        'integrity': 'sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO',
-        'crossorigin': 'anonymous'
-    }
-]
-
-
-pio.templates.default = "plotly_dark"
-
-
 def plotData(X, y):
     """
     Plots the data points X and y into a new figure. Plots the data 
@@ -102,9 +58,6 @@ def make_line(theta):
 	return [plot, class_1_data, class_2_data]
 
 
-
-
-
 sample_lines = []
 count = 0
 count_2 = 0
@@ -140,28 +93,17 @@ for i in lines:
 		], className="carousel-item"))
 
 
-app = dash.Dash(__name__, external_scripts=external_scripts, external_stylesheets=external_stylesheets)
-server = app.server
 
+# app.layout = html.Div(children=sample_lines,
+#     className='container')
 
-
-
-app.layout = html.Div(children=sample_lines,
-    className='container')
-
-app.layout = html.Div(children=
+layout_tour = html.Div(children=
 [
     html.Nav([
-        html.A("Playground", className="flex-sm-fill text-sm-center nav-link active", href="#"),
-        html.A("Tour", className="flex-sm-fill text-sm-center nav-link", href="#")
+        html.A("Playground", className="flex-sm-fill text-sm-center nav-link", href="/"),
+        html.A("Tour", className="flex-sm-fill text-sm-center nav-link active", href="/tour")
     ], className="nav nav-pills flex-column flex-sm-row"),
 
-# <nav class="nav nav-pills flex-column flex-sm-row">
-#   <a class="flex-sm-fill text-sm-center nav-link active" href="#">Active</a>
-#   <a class="flex-sm-fill text-sm-center nav-link" href="#">Longer nav link</a>
-#   <a class="flex-sm-fill text-sm-center nav-link" href="#">Link</a>
-#   <a class="flex-sm-fill text-sm-center nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-# </nav>
 
     html.H1('Logistic Regression Tour', className="text-center pt-5"),
 
@@ -205,6 +147,3 @@ app.layout = html.Div(children=
 ],
     className='container')
 
-
-if __name__ == "__main__":
-    app.run_server(debug=True)
