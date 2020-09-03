@@ -32,10 +32,6 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets,
                 )
 server = app.server
 
-# @server.route("/dash")
-# def MyDashApp():
-#     app.title = "Covid-19 Insights"
-#     return app.index()
 
 
 # setting initial values
@@ -74,7 +70,7 @@ penalty_options = [
         'label': 'elasticnet', 'value': 'elasticnet',
     },
     {
-        'label': 'none', 'value': 'none'
+        'label': 'none', 'value': 'none',
     },
 ]
 
@@ -110,9 +106,13 @@ training_size = 80
 dual_show = False
 random_state_show = False
 
+dynamic_id_dual = 'dual_picker'
+dynamic_id_penalty_picker = 'penalty_picker'
+dynamic_id_random_state_picker = 'random_state_picker'
+
 app.layout = html.Div(children=
 [
-    html.H1('Logistic Regression Visual Tool'),
+    html.H1('Logistic Regression Visual Tool', className="text-center pt-5"),
     html.Hr([]),
     # main playground
     html.Div(
@@ -120,7 +120,7 @@ app.layout = html.Div(children=
             # dataset generation
             html.Div([
                 html.Div([
-                    html.H3('Dataset generation'),
+                    html.H4('Dataset generation'),
                 ], className='col-md-12'),
 
                 html.Div([
@@ -152,7 +152,7 @@ app.layout = html.Div(children=
 
                     # samples parameter
                     html.Div([
-                        html.P("Number of samples in data", className="hyperparameter-title"),
+                        html.H6("Number of samples in data:", className="hyperparameter-title"),
                         dcc.Slider(
                             id='samples_picker',
                             min=10,
@@ -182,6 +182,7 @@ app.layout = html.Div(children=
                     html.Button(
                         id='data-generator',
                         children=['Generate'],
+                        className="btn btn-info m-3"
                     ),
                 ], className='col-md-6'),
                 # data graph
@@ -191,16 +192,19 @@ app.layout = html.Div(children=
                             id='dataset_graph',
                             # figure='fig'
                         ),
-                    ]),
+                    ], className="border"),
 
                 ], className='col-md-6'),
 
             ], className='row'),
+
+            html.Hr(className="m-2"),
+
             # upper half
             html.Div([
                 # tuners
                 html.Div([
-                    html.H1('Tuners here'),
+                    html.H3('Tuners here'),
 
                     # training size
 
@@ -239,7 +243,7 @@ app.layout = html.Div(children=
 
                     # penalty
                     html.Div([
-                        html.P("Penalty parameter", className="hyperparameter-title"),
+                        html.H6("Penalty parameter", className="hyperparameter-title"),
 
                         html.Div([
                         ],
@@ -361,6 +365,7 @@ app.layout = html.Div(children=
                     html.Button(
                         id='model-trainer',
                         children=['Train'],
+                        className="btn btn-info"
                     ),
 
                 ],
@@ -372,10 +377,11 @@ app.layout = html.Div(children=
                         dcc.Graph(
                             id='trained_model_graph',
                         ),
-                    ]),
+                    ], className="border"),
                 ],
                     className='col-md-6'),
             ], className='row'),
+
             # lower half
             html.Div([
                 html.Div(
@@ -398,7 +404,32 @@ app.layout = html.Div(children=
                 ),
             ], className='row'),
         ], id="playground"),
-    html.Div([], id='asd')
+    
+    # Blank Dummy Elements
+    html.Div([
+        dcc.RadioItems(
+            id=dynamic_id_dual,
+            options=[
+                {'label': 'True', 'value': 'True', 'disabled': True},
+                {'label': 'False', 'value': 'False', 'disabled': True},
+            ],
+            value='False'
+        ),
+        dcc.Dropdown(
+            id=dynamic_id_penalty_picker,
+            options=penalty_options,
+            value=penalty_value
+        ),
+        dcc.Slider(
+            id=dynamic_id_random_state_picker,
+            min=0,
+            max=10,
+            step=1,
+            value=0,
+            disabled=True,
+        ),
+    ], id='asd'),
+
 ],
     className='container')
 
@@ -412,6 +443,9 @@ def update_random_state_picker(solver):
     global solver_options
     global solver_value
     global random_state_value
+    global dynamic_id_random_state_picker
+
+    dynamic_id_random_state_picker = 'dummy3'
 
     if solver == 'sag' or solver == 'saga' or solver == 'lbfgs':
         return dcc.Slider(
@@ -474,8 +508,10 @@ def update_dual_picker(solver, penalty):
     global max_iter_value
     global dual_show
     global random_state_show
+    global dynamic_id_dual
 
     if solver == 'liblinear' and penalty == 'l2':
+        dynamic_id_dual = 'dummy1'
         return dcc.RadioItems(
             id='dual_picker',
             options=[
@@ -486,6 +522,7 @@ def update_dual_picker(solver, penalty):
         ),
     else:
         dual_value = False
+        dynamic_id_dual = 'dummy1'
         return dcc.RadioItems(
             id='dual_picker',
             options=[
@@ -512,6 +549,9 @@ def update_penalty_picker(solver):
     global max_iter_value
     global dual_show
     global random_state_show
+    global dynamic_id_penalty_picker
+
+    dynamic_id_penalty_picker = 'dummy2'
 
     # penalty
     if solver == 'newton-cg' or solver == 'sag' or solver == 'lbfgs':
@@ -915,5 +955,8 @@ def set_dependencies():
             },
         ]
 
-if __name__ == '__main__':
-    app.run_server(debug=False,dev_tools_ui=False,dev_tools_props_check=False)
+
+if __name__ == "__main__":
+    app.run_server(port=3000, debug=True,
+                   # dev_tools_ui=False, dev_tools_props_check=False
+                   )

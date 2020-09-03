@@ -151,6 +151,18 @@ app.layout = html.Div(children=sample_lines,
 
 app.layout = html.Div(children=
 [
+    html.Nav([
+        html.A("Playground", className="flex-sm-fill text-sm-center nav-link active", href="#"),
+        html.A("Tour", className="flex-sm-fill text-sm-center nav-link", href="#")
+    ], className="nav nav-pills flex-column flex-sm-row"),
+
+# <nav class="nav nav-pills flex-column flex-sm-row">
+#   <a class="flex-sm-fill text-sm-center nav-link active" href="#">Active</a>
+#   <a class="flex-sm-fill text-sm-center nav-link" href="#">Longer nav link</a>
+#   <a class="flex-sm-fill text-sm-center nav-link" href="#">Link</a>
+#   <a class="flex-sm-fill text-sm-center nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+# </nav>
+
     html.H1('Logistic Regression Tour', className="text-center pt-5"),
 
     html.P("Before jumping into what LOGISTIC REGRESSION is let’s have a basic understanding of what exactly a “Linear Regression “ is. So, basically Linear Regression is a statistical method which is used to find an equation that can predict an outcome for a binary variable i.e Y, based on one or more response variables i.e X. Also, the response variable in linear regression strictly requires continuous data."),
