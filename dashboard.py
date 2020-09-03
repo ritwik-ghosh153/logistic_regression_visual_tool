@@ -1121,6 +1121,6 @@ def display_page(pathname):
 
 
 if __name__ == "__main__":
-    app.run_server(port=3000, debug=True,
-                   # dev_tools_ui=False, dev_tools_props_check=False
+    app.run_server(port=3000, debug=False,
+                   dev_tools_ui=False, dev_tools_props_check=False
                    )
