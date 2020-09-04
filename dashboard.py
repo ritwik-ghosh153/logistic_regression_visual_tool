@@ -223,7 +223,7 @@ layout_main = html.Div([
                                 step=5,
                                 value=300,
                                 tooltip={'always_visible': False, 'placement': 'bottomLeft'},
-                                updatemode='drag',
+                                # updatemode='drag',
                                 marks={
                                     100: {'label': '100'},
                                     200: {'label': '200'},
@@ -284,7 +284,7 @@ layout_main = html.Div([
                                 step=1,
                                 value=training_size,
                                 tooltip={'always_visible': False, 'placement': 'bottomLeft'},
-                                updatemode='drag',
+                                # updatemode='drag',
                                 marks={
                                     10: {'label': '10'},
                                     15: {'label': '15'},
@@ -350,7 +350,7 @@ layout_main = html.Div([
                                 step=0.1,
                                 value=1.0,
                                 tooltip={'always_visible': False, 'placement': 'bottomLeft'},
-                                updatemode='drag',
+                                # updatemode='drag',
                                 marks={
                                     0: {'label': '0'},
                                     1: {'label': '1'},
@@ -901,7 +901,7 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
                                fit_intercept=True if fit_intercept_value == 'True' else False,
                                random_state=random_state_value, solver=solver_value, max_iter=max_iter_value,
                                # multi_class='auto',
-                               warm_start=False, n_jobs=-1 if solver_value != 'liblinear' else None, )
+                               warm_start=True if solver_value!="liblinear" else False, n_jobs=-1 if solver_value != 'liblinear' else None, )
     trained_model = model.fit(x_train, y_train)
     # prediction_train = trained_model.predict(x_train)
     prediction_test = trained_model.predict(x_test)
