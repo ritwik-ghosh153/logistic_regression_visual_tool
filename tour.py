@@ -291,9 +291,15 @@ layout_tour = html.Div([
     ], className='container mt-2'),
 
     html.Footer([
-        html.H6(
-            [html.A("Github Repository", href="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/")]),
-        html.H6("Contributors:"),
+        
+        html.Div([
+            html.Div([html.H6([html.A("Github Repository", href="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/")]),], className="col-12"),
+            html.Div([html.H6("Contributors:"),], className="col-12"),
+        ], className="row"),
+        
+        
+
+
         html.Div([
             html.Div([
                 html.Img(
@@ -332,5 +338,5 @@ layout_tour = html.Div([
                        className="ml-2"),
             ], className="col-md-6 mt-2"),
         ], className='row')
-    ], className="container border bg-light m-5")
+    ], className="container border bg-light mt-5")
 ])
