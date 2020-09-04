@@ -71,6 +71,15 @@ app.index_string = '''
         <meta name="description" content="A visual tool to visualize and understand change in logistic regression on changing hyper-parameters.">
         <meta name="keywords" content="Logistic Regression, Visualizsation, Logistic, Regression, Data Science, Machine Learning, SKLearn">
         <title>Logistic Regression Visual Tool</title>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177245626-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-177245626-1');
+        </script>
         {%favicon%}
         {%css%}
     </head>
