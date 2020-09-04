@@ -218,14 +218,13 @@ layout_main = html.Div([
                             ], className="hyperparameter-title"),
                             dcc.Slider(
                                 id='samples_picker',
-                                min=10,
+                                min=100,
                                 max=1000,
                                 step=5,
                                 value=300,
                                 tooltip={'always_visible': False, 'placement': 'bottomLeft'},
                                 updatemode='drag',
                                 marks={
-                                    10: {'label': '10'},
                                     100: {'label': '100'},
                                     200: {'label': '200'},
                                     300: {'label': '300'},
@@ -280,14 +279,13 @@ layout_main = html.Div([
 
                             dcc.Slider(
                                 id='training_size_picker',
-                                min=5,
-                                max=95,
+                                min=10,
+                                max=90,
                                 step=1,
                                 value=training_size,
                                 tooltip={'always_visible': False, 'placement': 'bottomLeft'},
                                 updatemode='drag',
                                 marks={
-                                    5: {'label': '5'},
                                     10: {'label': '10'},
                                     15: {'label': '15'},
                                     20: {'label': '20'},
@@ -305,7 +303,6 @@ layout_main = html.Div([
                                     80: {'label': '80'},
                                     85: {'label': '85'},
                                     90: {'label': '90'},
-                                    95: {'label': '95'},
                                 }
                             ),
                         ], className='border bg-white p-2'),
@@ -917,7 +914,7 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
     traces = []
     for i in range(0, n_classes):
         bool_cond = y_train == i
-        bool_cond_2 = prediction_test == i
+        bool_cond_2 = y_test == i
         # print(x_train[bool_cond])
         color = "red"
         if (i == 1):
@@ -1132,5 +1129,5 @@ def display_page(pathname):
 
 if __name__ == "__main__":
     app.run_server(debug=False,
-                   dev_tools_ui=False, dev_tools_props_check=False
+                   # dev_tools_ui=False, dev_tools_props_check=False
                    )
