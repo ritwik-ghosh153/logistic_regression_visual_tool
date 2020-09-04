@@ -88,7 +88,7 @@ app.index_string = '''
 # setting initial values
 
 
-data = pd.DataFrame()
+# data = pd.DataFrame()
 n_classes = 2
 # n_clusters = 1
 n_samples = 300
@@ -492,6 +492,11 @@ layout_main = html.Div([
 
         # Blank Dummy Elements
         html.Div([
+            html.Div([
+
+            ], id='data')
+        ], id='asd2'),
+        html.Div([
             dcc.RadioItems(
                 id=dynamic_id_dual,
                 options=[
@@ -789,7 +794,7 @@ def set_data(samples):
     return {}
 
 
-@app.callback(Output('dataset_graph', 'figure'), [Input('data-generator', 'n_clicks')])
+@app.callback([Output('dataset_graph', 'figure'), Output('data', 'children')], [Input('data-generator', 'n_clicks')])
 def generate_data(clicks):
     # if not clicks:
     #     return
@@ -797,13 +802,13 @@ def generate_data(clicks):
     global n_classes
     global isDataSet
     global n_samples
-    global data
+    # global data
     global isDataGenerated
     global firstGeneration
 
     if not firstGeneration:
         firstGeneration = True
-        return go.Figure()
+        return go.Figure(), pd.DataFrame().to_json(date_format='iso', orient='split')
 
     # isDataGenerated = False
     # if not isDataSet:
@@ -834,7 +839,7 @@ def generate_data(clicks):
             range=(min(data.iloc[:, 1]) - 1, max(data.iloc[:, 1]) + 1),
             constrain='domain'
         )
-    )
+    ), data.to_json(date_format='iso', orient='split')
 
 
 @app.callback([Output('trained_model_graph', 'figure'), Output('classification_score', 'children'),
@@ -843,14 +848,14 @@ def generate_data(clicks):
                Input('c_picker', 'value'), Input('fit_intercept_picker', 'value'),
                Input('random_state_picker', 'value'), Input('solver_picker', 'value'),
                Input('max_iter_picker', 'value'),
-               Input('training_size_picker', 'value')])
-def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, max_iter, train_size):
+               Input('training_size_picker', 'value'), Input('data', 'children')])
+def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, max_iter, train_size, data_json):
     # if clicks == 0:
     #     return
     # global n_clusters
     global n_classes
     global n_samples
-    global data
+    # global data
     global isDataGenerated
     global firstTraining
     global solver_value
@@ -863,6 +868,7 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
     global max_iter_value
     global training_size
 
+    data = pd.read_json(data_json, orient='split')
     # print("solver_value=", solver_value)
     # print("solver=", solver)
     solver_value = solver
@@ -943,54 +949,54 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
                                  range=(min(data.iloc[:, 1]) - 1, max(data.iloc[:, 1]) + 1),
                                  constrain='domain'
                              )), html.Table([
-        html.Tr([
-            html.Th(),
-            html.Th("Precision"),
-            html.Th("Recall"),
-            html.Th("F1-Score"),
-            html.Th("Support"),
-        ]),
-        html.Tr([
-            html.Th("0"),
-            html.Td(result[0][1]),
-            html.Td(result[0][2]),
-            html.Td(result[0][3]),
-            html.Td(result[0][4]),
-        ]),
-        html.Tr([
-            html.Th("1"),
-            html.Td(result[1][1]),
-            html.Td(result[1][2]),
-            html.Td(result[1][3]),
-            html.Td(result[1][4]),
-        ]),
-        html.Tr([
-            html.Th("Accuracy"),
-            html.Td(),
-            html.Td(),
-            html.Td(result[2][1]),
-            html.Td(result[2][2]),
-        ]),
-        html.Tr([
-            html.Th("Macro Avg"),
-            html.Td(result[3][2]),
-            html.Td(result[3][3]),
-            html.Td(result[3][4]),
-            html.Td(result[3][5]),
-        ]),
-        html.Tr([
-            html.Th("Weighted Avg"),
-            html.Td(result[4][2]),
-            html.Td(result[4][3]),
-            html.Td(result[4][4]),
-            html.Td(result[4][5]),
-        ]),
-    ], className='table table-hover table-sm'), go.Figure(data=[{
-        "type": "heatmap",
-        "x": ["Predicted 0's", "Predicted 1's"],
-        "y": ["Actual 0's", "Actual 1's"],
-        "z": matrix
-    }], layout={"title": "Confusion Matrix"})
+                                    html.Tr([
+                                        html.Th(),
+                                        html.Th("Precision"),
+                                        html.Th("Recall"),
+                                        html.Th("F1-Score"),
+                                        html.Th("Support"),
+                                    ]),
+                                    html.Tr([
+                                        html.Th("0"),
+                                        html.Td(result[0][1]),
+                                        html.Td(result[0][2]),
+                                        html.Td(result[0][3]),
+                                        html.Td(result[0][4]),
+                                    ]),
+                                    html.Tr([
+                                        html.Th("1"),
+                                        html.Td(result[1][1]),
+                                        html.Td(result[1][2]),
+                                        html.Td(result[1][3]),
+                                        html.Td(result[1][4]),
+                                    ]),
+                                    html.Tr([
+                                        html.Th("Accuracy"),
+                                        html.Td(),
+                                        html.Td(),
+                                        html.Td(result[2][1]),
+                                        html.Td(result[2][2]),
+                                    ]),
+                                    html.Tr([
+                                        html.Th("Macro Avg"),
+                                        html.Td(result[3][2]),
+                                        html.Td(result[3][3]),
+                                        html.Td(result[3][4]),
+                                        html.Td(result[3][5]),
+                                    ]),
+                                    html.Tr([
+                                        html.Th("Weighted Avg"),
+                                        html.Td(result[4][2]),
+                                        html.Td(result[4][3]),
+                                        html.Td(result[4][4]),
+                                        html.Td(result[4][5]),
+                                    ]),
+                                ], className='table table-hover table-sm'), go.Figure(data=[{
+                                    "type": "heatmap",
+                                    "x": ["Predicted 0's", "Predicted 1's"],
+                                    "y": ["Actual 0's", "Actual 1's"],
+                                    "z": matrix
+                                }], layout={"title": "Confusion Matrix"})
 
 
 def set_dependencies():
@@ -1121,6 +1127,6 @@ def display_page(pathname):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=False,
-                   dev_tools_ui=False, dev_tools_props_check=False
+    app.run_server(port=3000, debug=True,
+                   # dev_tools_ui=False, dev_tools_props_check=False
                    )
