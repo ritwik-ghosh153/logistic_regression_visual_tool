@@ -916,9 +916,9 @@ def train_model(clicks, penalty, dual, c, fit_intercept, random_state, solver, m
         bool_cond = y_train == i
         bool_cond_2 = y_test == i
         # print(x_train[bool_cond])
-        color = "red"
+        color = "#636EFA"
         if (i == 1):
-            color = "purple"
+            color = "#EF553B"
 
         traces.append(go.Scatter(x=x_train[bool_cond][0], y=x_train[bool_cond][1], mode='markers',
                                  name='class ' + str(i) + ' training data', marker_symbol='triangle-up',
@@ -1129,5 +1129,5 @@ def display_page(pathname):
 
 if __name__ == "__main__":
     app.run_server(debug=False,
-                   # dev_tools_ui=False, dev_tools_props_check=False
+                   dev_tools_ui=False, dev_tools_props_check=False
                    )
