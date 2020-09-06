@@ -71,6 +71,15 @@ app.index_string = '''
         <meta name="description" content="A visual tool to visualize and understand change in logistic regression on changing hyper-parameters.">
         <meta name="keywords" content="Logistic Regression, Visualizsation, Logistic, Regression, Data Science, Machine Learning, SKLearn">
         <title>Logistic Regression Visual Tool</title>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177245626-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-177245626-1');
+        </script>
         {%favicon%}
         {%css%}
     </head>
@@ -523,9 +532,15 @@ layout_main = html.Div([
     html.Hr(),
 
     html.Footer([
-        html.H6(
-            [html.A("Github Repository", href="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/")]),
-        html.H6("Contributors:"),
+        
+        html.Div([
+            html.Div([html.H6([html.A("Github Repository", href="https://github.com/ritwik-ghosh153/logistic_regression_visual_tool/")]),], className="col-12"),
+            html.Div([html.H6("Contributors:"),], className="col-12"),
+        ], className="row"),
+        
+        
+
+
         html.Div([
             html.Div([
                 html.Img(
@@ -564,7 +579,7 @@ layout_main = html.Div([
                        className="ml-2"),
             ], className="col-md-6 mt-2"),
         ], className='row')
-    ], className="container border bg-light m-5")
+    ], className="container border bg-light mt-5")
 
 ], )
 
